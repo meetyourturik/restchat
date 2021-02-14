@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: restchat
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/msg2_db
+    username: developer
+    password: password
+
+logging:
+  level:
+    root: DEBUG
