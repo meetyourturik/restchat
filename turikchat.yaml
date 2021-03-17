@@ -1,0 +1,254 @@
+openapi: '3.0.2'
+info:
+  title: turik chat api
+  version: '2.0'
+servers:
+  - url: http://localhost:8080/v1
+    description: main server
+
+components:
+  parameters:
+    user_id:
+      in: path
+      name: user_id
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: user id
+    message_id:
+      in: path
+      name: message_id
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: message id
+    request_id:
+      in: path
+      name: request_id
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: request id
+
+  schemas:
+    id:
+      type: integer
+      minimum: 1
+      default: 1
+    request_status:
+      type: string
+      enum: [requested, declined, approved]
+    user_status:
+      type: string
+      enum: [active, inactive, banned]
+    chat_permission:
+      type: string
+      enum: [everyone, friends_only]
+    report_reason:
+      type: string
+      enum: [spam, abuse, violence, other]
+    user_fields:
+      type: object
+      properties:
+        username:
+          type: string
+          default: "john_galt"
+        email:
+          type: string
+          default: "john_galt@atlas.sh"
+        timezone:
+          type: string
+          default: "Europe/Moscow"
+        language:
+          type: string
+          default: "RU"
+        chat_permission:
+          $ref: '#/components/schemas/chat_permission'
+          default: everyone
+        ip:
+          type: string
+          format: ipv4
+    user_extra_fields:
+      type: object
+      properties:
+        user_status:
+          $ref: '#/components/schemas/user_status'
+          default: active
+        deletion_date:
+          type: string
+          format: date-time
+    user:
+      allOf:
+        - $ref: '#/components/schemas/id'
+        - $ref: '#/components/schemas/user_fields'
+              
+    user_report:
+      type: object
+      properties:
+        reporter_id:
+          $ref: '#/components/schemas/id'
+        report_reason:
+          $ref: '#/components/schemas/report_reason'
+    message:
+      type: object
+      properties:
+        message_id:
+          $ref: '#/components/schemas/id'
+        sender_id:
+          $ref: '#/components/schemas/id'
+        receiver_id:
+          $ref: '#/components/schemas/id'
+        text:
+          type: string
+        created:
+          type: string
+          format: date-time
+
+paths:
+  /user:
+    post:
+      summary: create user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_fields'
+      responses:
+        '201':
+          description: Created
+  
+  /user/{user_id}:
+    get:
+      summary: get users by id
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: user
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/id"
+                  - $ref: '#/components/schemas/user_fields'
+                  - $ref: '#/components/schemas/user_extra_fields'
+        '404':
+          description: user not found
+    put:
+      summary: update user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_fields'
+      responses:
+        '200':
+          description: successfull login
+        '404':
+          description: user not found
+    delete:
+      summary: delete user
+      tags:
+        - users
+      responses:
+        '200':
+          description: successfull login
+        '404':
+          description: user not found
+  /user/{user_id}/ban:
+    post:
+      summary: ban user by id
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: user banned
+        '404':
+          description: user not found
+
+  /user/{user_id}/deactivate:
+    post:
+      summary: deactivate user by id
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: user deactivated
+        '404':
+          description: user not found
+    
+  /user/{user_id}/report:
+    post:
+      summary: report user by id
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_report'
+      responses:
+        '200':
+          description: user deactivated
+        '404':
+          description: user not found
+  
+  /user/{user_id}/login:
+    get:
+      summary: user login
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: successfull login
+        '404':
+          description: user not found
+
+  /message:
+    post:
+      summary: send a message
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/message'
+      responses:
+        '201':
+          description: message sent
+
+  /message/{message_id}:
+    delete:
+      summary: delete a message
+      tags:
+        - messages
+      responses:
+        '200':
+          description: message deleted
+        '404':
+          description: message not found
