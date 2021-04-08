@@ -16,6 +16,22 @@ components:
         type: integer
         minimum: 1
       description: user id
+    user_id1:
+      in: path
+      name: user_id1
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: user id1
+    user_id2:
+      in: path
+      name: user_id2
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: user id2
     message_id:
       in: path
       name: message_id
@@ -194,12 +210,12 @@ paths:
         '404':
           description: user not found
   /users/{user_id}:
+    parameters:
+      - $ref: '#/components/parameters/user_id'
     get:
       summary: get users by id
       tags:
         - users
-      parameters:
-        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: user
@@ -268,6 +284,8 @@ paths:
       summary: delete a message
       tags:
         - messages
+      parameters:
+        - $ref: '#/components/parameters/message_id'
       responses:
         '200':
           description: message deleted
@@ -279,8 +297,8 @@ paths:
       tags:
         - messages
       parameters:
-        - $ref: '#/components/parameters/user_id'
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id2'
         - $ref: '#/components/parameters/timestamp'
       responses:
         '200': 
@@ -300,8 +318,8 @@ paths:
       tags:
         - messages
       parameters:
-        - $ref: '#/components/parameters/user_id'
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id2'
       responses:
         '200': 
           description: deleted messages
@@ -334,8 +352,8 @@ paths:
       tags:
         - friendship
       parameters:
-        - $ref: '#/components/parameters/user_id'
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id2'
       responses:
         '200':
           description: success
