@@ -8,45 +8,53 @@ servers:
 
 components:
   parameters:
+    usernamePattern:
+      in: query
+      name: usernamePattern
+      schema:
+        type: string
+    language:
+      in: query
+      name: language
+      schema:
+        type: string
+    user_status:
+      in: query
+      name: user_status
+      schema:
+        $ref: '#/components/schemas/user_status'
+    chat_permission:
+      in: query
+      name: chat_permission
+      schema:
+        $ref: '#/components/schemas/chat_permission'
     user_id:
       in: path
       name: user_id
       required: true
       schema:
-        type: integer
-        minimum: 1
+        $ref: '#/components/schemas/id'
       description: user id
-    user_id1:
-      in: path
-      name: user_id1
-      required: true
-      schema:
-        type: integer
-        minimum: 1
-      description: user id1
     user_id2:
       in: path
       name: user_id2
       required: true
       schema:
-        type: integer
-        minimum: 1
-      description: user id2
+        $ref: '#/components/schemas/id'
+      description: user id
     message_id:
       in: path
       name: message_id
       required: true
       schema:
-        type: integer
-        minimum: 1
+        $ref: '#/components/schemas/id'
       description: message id
     request_id:
       in: path
       name: request_id
       required: true
       schema:
-        type: integer
-        minimum: 1
+        $ref: '#/components/schemas/id'
       description: request id
     timestamp:
       in: path
@@ -59,7 +67,8 @@ components:
 
   schemas:
     id:
-      type: integer
+      type: number
+      format: int64
       minimum: 1
       default: 1
     request_status:
@@ -117,12 +126,14 @@ components:
       properties:
         reporter_id:
           $ref: '#/components/schemas/id'
+        reported_id:
+          $ref: '#/components/schemas/id'
         report_reason:
           $ref: '#/components/schemas/report_reason'
     friend_request:
       type: object
       properties:
-        request_id:
+        id:
           $ref: '#/components/schemas/id'
         sender_id:
           $ref: '#/components/schemas/id'
@@ -139,7 +150,7 @@ components:
     message:
       type: object
       properties:
-        message_id:
+        id:
           $ref: '#/components/schemas/id'
         sender_id:
           $ref: '#/components/schemas/id'
@@ -163,14 +174,34 @@ components:
           sender_id: user13
           receiver_id: user12
           text: 'general kenobi'
-    arrayOfIds:
+    deleted_message:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        sender_id:
+          $ref: '#/components/schemas/id'
+        receiver_id:
+          $ref: '#/components/schemas/id'
+        created:
+          type: string
+          format: date-time
+        deleted:
+          type: string
+          format: date-time
+    arrayOfDeletedMessages:
       type: array
       items:
-        $ref: '#/components/schemas/id'
+        $ref: '#/components/schemas/deleted_message'
 
 paths:
   /users:
     get:
+      parameters:
+        - $ref: '#/components/parameters/usernamePattern'
+        - $ref: '#/components/parameters/language'
+        - $ref: '#/components/parameters/user_status'
+        - $ref: '#/components/parameters/chat_permission'
       summary: get all users
       tags:
         - users
@@ -297,7 +328,7 @@ paths:
       tags:
         - messages
       parameters:
-        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id'
         - $ref: '#/components/parameters/user_id2'
         - $ref: '#/components/parameters/timestamp'
       responses:
@@ -312,21 +343,22 @@ paths:
         '404':
           description: user not found
   
-  /deletedmessages/{user_id1}/{user_id2}:
+  /deletedmessages/{user_id1}/{user_id2}/{timestamp}:
     get:
       summary: get ids of deleted messages between user1 and user2
       tags:
         - messages
       parameters:
-        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id'
         - $ref: '#/components/parameters/user_id2'
+        - $ref: '#/components/parameters/timestamp'
       responses:
         '200': 
           description: deleted messages
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/arrayOfIds'
+                $ref: '#/components/schemas/arrayOfDeletedMessages'
         '404':
           description: user not found
 
@@ -352,7 +384,7 @@ paths:
       tags:
         - friendship
       parameters:
-        - $ref: '#/components/parameters/user_id1'
+        - $ref: '#/components/parameters/user_id'
         - $ref: '#/components/parameters/user_id2'
       responses:
         '200':
