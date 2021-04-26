@@ -1,0 +1,435 @@
+openapi: '3.0.2'
+info:
+  title: turik chat api
+  version: '2.0'
+servers:
+  - url: http://localhost:8080/v1
+    description: main server
+
+components:
+  parameters:
+    usernamePattern:
+      in: query
+      name: usernamePattern
+      schema:
+        type: string
+    language:
+      in: query
+      name: language
+      schema:
+        type: string
+    user_status:
+      in: query
+      name: user_status
+      schema:
+        $ref: '#/components/schemas/user_status'
+    chat_permission:
+      in: query
+      name: chat_permission
+      schema:
+        $ref: '#/components/schemas/chat_permission'
+    user_id:
+      in: path
+      name: user_id
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+      description: user id
+    user_id2:
+      in: path
+      name: user_id2
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+      description: user id
+    message_id:
+      in: path
+      name: message_id
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+      description: message id
+    request_id:
+      in: path
+      name: request_id
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
+      description: request id
+    timestamp:
+      in: path
+      name: timestamp
+      required: true
+      schema:
+        type: string
+        format: date-time
+      description: timestamp
+
+  schemas:
+    id:
+      type: number
+      format: int64
+      minimum: 1
+      default: 1
+    request_status:
+      type: string
+      enum: [requested, declined, approved]
+    user_status:
+      type: string
+      enum: [active, inactive, banned]
+    chat_permission:
+      type: string
+      enum: [everyone, friends_only]
+    report_reason:
+      type: string
+      enum: [spam, abuse, violence, other]
+    user:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        username:
+          type: string
+          default: "john_galt"
+        email:
+          type: string
+          default: "john_galt@atlas.sh"
+        timezone:
+          type: string
+          default: "Europe/Moscow"
+        language:
+          type: string
+          default: "RU"
+        chat_permission:
+          $ref: '#/components/schemas/chat_permission'
+          default: everyone
+        user_status:
+          $ref: '#/components/schemas/user_status'
+          default: active
+        deletion_date:
+          type: string
+          format: date-time
+        ip:
+          type: string
+          format: ipv4
+    arrayOfUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/user'
+      example:
+        - id: 12
+          username: user12
+        - id: 13
+          username: user13
+    user_report:
+      type: object
+      properties:
+        reporter_id:
+          $ref: '#/components/schemas/id'
+        reported_id:
+          $ref: '#/components/schemas/id'
+        report_reason:
+          $ref: '#/components/schemas/report_reason'
+    friend_request:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        sender_id:
+          $ref: '#/components/schemas/id'
+        receiver_id:
+          $ref: '#/components/schemas/id'
+        request_status:
+          $ref: '#/components/schemas/request_status'
+        text:
+          type: string
+        created:
+          type: string
+          format: date-time
+
+    message:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        sender_id:
+          $ref: '#/components/schemas/id'
+        receiver_id:
+          $ref: '#/components/schemas/id'
+        text:
+          type: string
+        created:
+          type: string
+          format: date-time
+    arrayOfMessages:
+      type: array
+      items:
+        $ref: '#/components/schemas/message'
+      example:
+        - message_id: 124
+          sender_id: user12
+          receiver_id: user13
+          text: 'hello there'
+        - message_id: 125
+          sender_id: user13
+          receiver_id: user12
+          text: 'general kenobi'
+    deleted_message:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        sender_id:
+          $ref: '#/components/schemas/id'
+        receiver_id:
+          $ref: '#/components/schemas/id'
+        created:
+          type: string
+          format: date-time
+        deleted:
+          type: string
+          format: date-time
+    arrayOfDeletedMessages:
+      type: array
+      items:
+        $ref: '#/components/schemas/deleted_message'
+
+paths:
+  /users:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/usernamePattern'
+        - $ref: '#/components/parameters/language'
+        - $ref: '#/components/parameters/user_status'
+        - $ref: '#/components/parameters/chat_permission'
+      summary: get all users
+      tags:
+        - users
+      responses:
+        200:
+          description: all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arrayOfUsers'
+    post:
+      summary: create user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '201':
+          description: Created
+    patch:
+      summary: update user
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: user updated
+        '404':
+          description: user not found
+  /users/{user_id}:
+    parameters:
+      - $ref: '#/components/parameters/user_id'
+    get:
+      summary: get users by id
+      tags:
+        - users
+      responses:
+        '200':
+          description: user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          description: user not found
+    delete:
+      summary: delete user
+      tags:
+        - users
+      responses:
+        '200':
+          description: user deleted
+        '404':
+          description: user not found
+  /users/report:
+    post:
+      summary: report user by id
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_report'
+      responses:
+        '201':
+          description: user reported
+        '404':
+          description: user not found
+  /messages:
+    post:
+      summary: send a message
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/message'
+      responses:
+        '201':
+          description: message sent
+    patch:
+      summary: update message
+      tags:
+        - messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/message'
+      responses:
+        '200':
+          description: message updated
+        '404':
+          description: message not found
+  /messages/{message_id}:
+    delete:
+      summary: delete a message
+      tags:
+        - messages
+      parameters:
+        - $ref: '#/components/parameters/message_id'
+      responses:
+        '200':
+          description: message deleted
+        '404':
+          description: message not found
+  /messages/{user_id1}/{user_id2}/{timestamp}:
+    get:
+      summary: get message history between user1 and user2 after timestamp
+      tags:
+        - messages
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id2'
+        - $ref: '#/components/parameters/timestamp'
+      responses:
+        '200': 
+          description: messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arrayOfMessages'
+        '400':
+          description: incorrect timestamp
+        '404':
+          description: user not found
+  
+  /deletedmessages/{user_id1}/{user_id2}/{timestamp}:
+    get:
+      summary: get ids of deleted messages between user1 and user2
+      tags:
+        - messages
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id2'
+        - $ref: '#/components/parameters/timestamp'
+      responses:
+        '200': 
+          description: deleted messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arrayOfDeletedMessages'
+        '404':
+          description: user not found
+
+  /friends/{user_id}:
+    get:
+      summary: get friends of a user
+      tags:
+        - friendship
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: friends
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arrayOfUsers'
+        '404':
+          description: user not found
+  /friends/{user_id1}/{user_id2}:
+    delete:
+      summary: end friendship
+      tags:
+        - friendship
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/user_id2'
+      responses:
+        '200':
+          description: success
+        '404':
+          description: user not found
+
+  /friendrequests:
+    post:
+      summary: create friend request
+      tags:
+        - friendship
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/friend_request'
+      responses:
+        '201':
+          description: friendship requested
+    patch:
+      summary: update friend request
+      tags:
+        - friendship
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/friend_request'
+      responses:
+        '200':
+          description: request updated
+        '404':
+          description: request not found
+  /friendrequests/{request_id}:
+    delete:
+      summary: delete request
+      tags:
+        - friendship
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      responses:
+        '200':
+          description: success
+        '404':
+          description: request not found
