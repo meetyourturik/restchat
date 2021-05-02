@@ -322,7 +322,7 @@ paths:
           description: message deleted
         '404':
           description: message not found
-  /messages/{user_id1}/{user_id2}/{timestamp}:
+  /messages/{user_id}/{user_id2}/{timestamp}:
     get:
       summary: get message history between user1 and user2 after timestamp
       tags:
@@ -343,7 +343,7 @@ paths:
         '404':
           description: user not found
   
-  /deletedmessages/{user_id1}/{user_id2}/{timestamp}:
+  /deletedmessages/{user_id}/{user_id2}/{timestamp}:
     get:
       summary: get ids of deleted messages between user1 and user2
       tags:
@@ -378,7 +378,7 @@ paths:
                 $ref: '#/components/schemas/arrayOfUsers'
         '404':
           description: user not found
-  /friends/{user_id1}/{user_id2}:
+  /friends/{user_id}/{user_id2}:
     delete:
       summary: end friendship
       tags:

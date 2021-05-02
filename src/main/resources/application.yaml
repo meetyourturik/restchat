@@ -3,7 +3,7 @@ spring:
     name: restchat
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/03
+    url: jdbc:postgresql://localhost:5432/restchat_db1
     username: developer
     password: password
 
