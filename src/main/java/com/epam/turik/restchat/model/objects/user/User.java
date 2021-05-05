@@ -1,7 +1,10 @@
 package com.epam.turik.restchat.model.objects.user;
 
+import lombok.Data;
+
 import java.sql.Timestamp;
 
+@Data
 public class User {
     private long id;
     private String username;

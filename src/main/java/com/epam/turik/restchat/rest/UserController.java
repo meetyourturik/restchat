@@ -15,49 +15,48 @@ import java.util.List;
 @RequestMapping("users")
 public class UserController {
     private final UserService userService;
-    private final RestMapper restMapper;
+    private final UserRestMapper userRestMapper;
 
-    public UserController(UserService userService, RestMapper restMapper) {
+    public UserController(UserService userService, UserRestMapper userRestMapper) {
         this.userService = userService;
-        this.restMapper = restMapper;
+        this.userRestMapper = userRestMapper;
     }
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id) {
-//        if (!userRepository.existsById(id)) {
-//            throw new UserNotFoundException();
-//        }
-        User user = userService.findById(id);
-        UserDTO userDTO = restMapper.transformUser(user);
-        return userDTO;
+        User user = userService.getUserById(id);
+        return userRestMapper.convertToDTO(user);
     }
 
     @GetMapping("/")
     public List<UserDTO> getAll() {
         List<User> users = userService.getAllUsers();
-        return new ArrayList<>();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user: users) {
+            userDTOs.add(userRestMapper.convertToDTO(user));
+        }
+        return userDTOs;
     }
 
     @PostMapping("/")
-    public void addUser(@RequestBody UserDTO userDTO) {
-        userService.createUser(userDTO);
+    public void createUser(@RequestBody UserDTO userDTO) {
+        User user = userRestMapper.convertToBusinessObject(userDTO);
+        userService.createUser(user);
     }
 
     @PatchMapping("/")
-    public void updateUser(@RequestBody UserDTO data){
-        userService.updateUser(data);
+    public void updateUser(@RequestBody UserDTO userDTO){
+        User user = userRestMapper.convertToBusinessObject(userDTO);
+        userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
-//        if (!userRepository.existsById(id)) {
-//            throw new UserNotFoundException();
-//        }
         userService.deleteUser(id);
     }
 
     @PostMapping("/report")
-    public void reportUser(ReportDTO data) {
+    public void reportUser(ReportDTO reportDTO) {
         // post user report
     }
 }
