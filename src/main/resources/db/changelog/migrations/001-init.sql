@@ -4,10 +4,10 @@ create sequence if not exists user_id;
 create sequence if not exists message_id;
 create sequence if not exists friendship_request_id;
 
-create type request_status AS ENUM ('requested', 'declined', 'approved');
-create type user_status AS ENUM ('active', 'inactive', 'banned');
-create type chat_permission AS ENUM ('everyone', 'friends_only');
-create type report_reason AS ENUM ('spam', 'abuse', 'violence', 'other');
+create type request_status AS ENUM ('REQUESTED', 'DECLINED', 'APPROVED');
+create type user_status AS ENUM ('ACTIVE', 'INACTIVE', 'BANNED');
+create type chat_permission AS ENUM ('EVERYONE', 'FRIENDS_ONLY');
+create type report_reason AS ENUM ('SPAM', 'ABUSE', 'VIOLENCE', 'OTHER');
 
 create table "user" (
     id bigint NOT NULL DEFAULT nextval('user_id'),

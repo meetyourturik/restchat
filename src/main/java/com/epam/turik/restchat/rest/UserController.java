@@ -5,6 +5,7 @@ import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.objects.ReportDTO;
 import com.epam.turik.restchat.rest.objects.UserDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class UserController {
     private final UserService userService;
     private final UserRestMapper userRestMapper;
 
+    @Autowired
     public UserController(UserService userService, UserRestMapper userRestMapper) {
         this.userService = userService;
         this.userRestMapper = userRestMapper;
@@ -33,6 +35,7 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user: users) {
+            log.warn(user.toString());
             userDTOs.add(userRestMapper.convertToDTO(user));
         }
         return userDTOs;
@@ -40,7 +43,10 @@ public class UserController {
 
     @PostMapping("/")
     public void createUser(@RequestBody UserDTO userDTO) {
+        log.warn(userDTO.toString());
+        log.warn("1");
         User user = userRestMapper.convertToBusinessObject(userDTO);
+        log.warn(user.toString());
         userService.createUser(user);
     }
 

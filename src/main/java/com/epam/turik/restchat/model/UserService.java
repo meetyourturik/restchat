@@ -4,6 +4,7 @@ import com.epam.turik.restchat.data.UserRepository;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class UserService {
     UserRepository userRepository;
     UserModelMapper userModelMapper;
 
+    @Autowired
     UserService(UserRepository userRepository, UserModelMapper userModelMapper) {
         this.userRepository = userRepository;
         this.userModelMapper = userModelMapper;
