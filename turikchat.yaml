@@ -194,6 +194,36 @@ components:
       items:
         $ref: '#/components/schemas/deleted_message'
 
+    rfc7807Error:
+      type: object
+      properties: 
+        type:
+          type: string
+        title:
+          type: string
+        invalid-params:
+          $ref: '#/components/schemas/rfc7807InvalidParamsArray'
+    rfc7807InvalidParamsArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/rfc7807InvalidParam'
+    rfc7807InvalidParam:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: name of incorrect parameter
+        reason:
+          type: string
+          description: explanation why parameter is invalid
+
+  responses:
+    rfc7807:
+      description: https://datatracker.ietf.org/doc/html/rfc7807
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/rfc7807Error'
 paths:
   /users:
     get:
@@ -212,6 +242,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/arrayOfUsers'
+        500:
+          description: internal server error
     post:
       summary: create user
       tags:
@@ -223,8 +255,12 @@ paths:
             schema:
               $ref: '#/components/schemas/user'
       responses:
-        '201':
+        201:
           description: Created
+        400:
+          $ref: '#/components/responses/rfc7807'
+        500:
+          description: internal server error
     patch:
       summary: update user
       tags:
@@ -236,10 +272,14 @@ paths:
             schema:
               $ref: '#/components/schemas/user'
       responses:
-        '200':
+        200:
           description: user updated
-        '404':
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
           description: user not found
+        500:
+          description: internal server error
   /users/{user_id}:
     parameters:
       - $ref: '#/components/parameters/user_id'
@@ -248,23 +288,27 @@ paths:
       tags:
         - users
       responses:
-        '200':
+        200:
           description: user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
-        '404':
+        404:
           description: user not found
+        500:
+          description: internal server error
     delete:
       summary: delete user
       tags:
         - users
       responses:
-        '200':
+        200:
           description: user deleted
-        '404':
+        404:
           description: user not found
+        500:
+          description: internal server error
   /users/report:
     post:
       summary: report user by id
@@ -277,10 +321,14 @@ paths:
             schema:
               $ref: '#/components/schemas/user_report'
       responses:
-        '201':
+        201:
           description: user reported
-        '404':
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
           description: user not found
+        500:
+          description: internal server error
   /messages:
     post:
       summary: send a message
@@ -293,8 +341,12 @@ paths:
             schema:
               $ref: '#/components/schemas/message'
       responses:
-        '201':
+        201:
           description: message sent
+        400:
+          $ref: '#/components/responses/rfc7807'
+        500:
+          description: internal server error
     patch:
       summary: update message
       tags:
@@ -306,10 +358,14 @@ paths:
             schema:
               $ref: '#/components/schemas/message'
       responses:
-        '200':
+        200:
           description: message updated
-        '404':
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
           description: message not found
+        500:
+          description: internal server error
   /messages/{message_id}:
     delete:
       summary: delete a message
@@ -318,10 +374,12 @@ paths:
       parameters:
         - $ref: '#/components/parameters/message_id'
       responses:
-        '200':
+        200:
           description: message deleted
-        '404':
+        404:
           description: message not found
+        500:
+          description: internal server error
   /messages/{user_id}/{user_id2}/{timestamp}:
     get:
       summary: get message history between user1 and user2 after timestamp
@@ -332,16 +390,18 @@ paths:
         - $ref: '#/components/parameters/user_id2'
         - $ref: '#/components/parameters/timestamp'
       responses:
-        '200': 
+        200: 
           description: messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/arrayOfMessages'
-        '400':
-          description: incorrect timestamp
-        '404':
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
           description: user not found
+        500:
+          description: internal server error
   
   /deletedmessages/{user_id}/{user_id2}/{timestamp}:
     get:
@@ -353,14 +413,18 @@ paths:
         - $ref: '#/components/parameters/user_id2'
         - $ref: '#/components/parameters/timestamp'
       responses:
-        '200': 
+        200: 
           description: deleted messages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/arrayOfDeletedMessages'
-        '404':
-          description: user not found
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
+          description: user not 
+        500:
+          description: internal server error
 
   /friends/{user_id}:
     get:
@@ -370,14 +434,16 @@ paths:
       parameters:
         - $ref: '#/components/parameters/user_id'
       responses:
-        '200':
+        200:
           description: friends
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/arrayOfUsers'
-        '404':
+        404:
           description: user not found
+        500:
+          description: internal server error
   /friends/{user_id}/{user_id2}:
     delete:
       summary: end friendship
@@ -387,10 +453,12 @@ paths:
         - $ref: '#/components/parameters/user_id'
         - $ref: '#/components/parameters/user_id2'
       responses:
-        '200':
+        200:
           description: success
-        '404':
+        404:
           description: user not found
+        500:
+          description: internal server error
 
   /friendrequests:
     post:
@@ -404,8 +472,12 @@ paths:
             schema:
               $ref: '#/components/schemas/friend_request'
       responses:
-        '201':
+        201:
           description: friendship requested
+        400:
+          $ref: '#/components/responses/rfc7807'
+        500:
+          description: internal server error
     patch:
       summary: update friend request
       tags:
@@ -417,10 +489,14 @@ paths:
             schema:
               $ref: '#/components/schemas/friend_request'
       responses:
-        '200':
+        200:
           description: request updated
-        '404':
+        400:
+          $ref: '#/components/responses/rfc7807'
+        404:
           description: request not found
+        500:
+          description: internal server error
   /friendrequests/{request_id}:
     delete:
       summary: delete request
@@ -429,7 +505,9 @@ paths:
       parameters:
         - $ref: '#/components/parameters/request_id'
       responses:
-        '200':
+        200:
           description: success
-        '404':
+        404:
           description: request not found
+        500:
+          description: internal server error
