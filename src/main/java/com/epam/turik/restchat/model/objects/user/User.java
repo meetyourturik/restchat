@@ -1,5 +1,7 @@
 package com.epam.turik.restchat.model.objects.user;
 
+import com.epam.turik.restchat.data.objects.user.ChatPermission;
+import com.epam.turik.restchat.data.objects.user.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,15 +19,4 @@ public class User {
     private Timestamp deletionDate;
     private ChatPermission chatPermission;
     private String ip;
-
-    public User(String username, UserStatus status, String email, String timezone, String language, Timestamp deletionDate, ChatPermission chatPermission, String ip) {
-        this.username = username;
-        this.status = status;
-        this.email = email;
-        this.timezone = timezone;
-        this.language = language;
-        this.deletionDate = deletionDate;
-        this.chatPermission = chatPermission;
-        this.ip = ip;
-    }
 }

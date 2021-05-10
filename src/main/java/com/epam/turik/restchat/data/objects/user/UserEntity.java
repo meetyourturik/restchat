@@ -1,33 +1,30 @@
 package com.epam.turik.restchat.data.objects.user;
 
-import com.epam.turik.restchat.model.objects.user.ChatPermission;
-import com.epam.turik.restchat.model.objects.user.UserStatus;
 import com.vladmihalcea.hibernate.type.basic.Inet;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "user", schema = "public")
-@TypeDefs({
-        @TypeDef(
-                name = "pgEnum",
-                typeClass = PostgreSQLEnumType.class
-        ),
-        @TypeDef(
-                name = "pgInet",
-                typeClass = PostgreSQLInetType.class
-        )
-})
+@TypeDef(
+        name = "pgEnum",
+        typeClass = PostgreSQLEnumType.class
+)
+@TypeDef(
+        name = "pgInet",
+        typeClass = PostgreSQLInetType.class
+)
 public class UserEntity {
 
     @Id

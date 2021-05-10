@@ -30,27 +30,23 @@ public class UserController {
         return userRestMapper.convertToDTO(user);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<UserDTO> getAll() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user: users) {
-            log.warn(user.toString());
             userDTOs.add(userRestMapper.convertToDTO(user));
         }
         return userDTOs;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public void createUser(@RequestBody UserDTO userDTO) {
-        log.warn(userDTO.toString());
-        log.warn("1");
         User user = userRestMapper.convertToBusinessObject(userDTO);
-        log.warn(user.toString());
         userService.createUser(user);
     }
 
-    @PatchMapping("/")
+    @PatchMapping("")
     public void updateUser(@RequestBody UserDTO userDTO){
         User user = userRestMapper.convertToBusinessObject(userDTO);
         userService.updateUser(user);

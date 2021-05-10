@@ -27,10 +27,7 @@ public class UserService {
     }
 
     public User getUserById(long id) throws UserNotFoundException {
-        UserEntity userEntity = userRepository.findById(id).orElse(null);
-        if (userEntity == null) {
-            throw new UserNotFoundException();
-        }
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return userModelMapper.convertToBusinessObject(userEntity);
     }
 
@@ -45,10 +42,7 @@ public class UserService {
 
     public void updateUser(User user) throws UserNotFoundException {
         // user here is not really User, maybe should be some separate thing
-        UserEntity userEntity = userRepository.findById(user.getId()).orElse(null);
-        if (userEntity == null) {
-            throw new UserNotFoundException();
-        }
+        UserEntity userEntity = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         userEntity.setUsername(user.getUsername());
         userRepository.save(userEntity);
     }

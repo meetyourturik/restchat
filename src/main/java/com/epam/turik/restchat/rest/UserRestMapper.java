@@ -5,9 +5,9 @@ package com.epam.turik.restchat.rest;
  * also gotta validate first
  */
 
-import com.epam.turik.restchat.model.objects.user.ChatPermission;
+import com.epam.turik.restchat.data.objects.user.ChatPermission;
 import com.epam.turik.restchat.model.objects.user.User;
-import com.epam.turik.restchat.model.objects.user.UserStatus;
+import com.epam.turik.restchat.data.objects.user.UserStatus;
 import com.epam.turik.restchat.rest.objects.UserDTO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
