@@ -25,7 +25,6 @@ public class UserService {
 
     public void createUser(User user) {
         UserEntity userEntity = userModelMapper.toEntity(user);
-        log.warn(userEntity.toString());
         userRepository.save(userEntity);
     }
 

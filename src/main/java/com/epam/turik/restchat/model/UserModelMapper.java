@@ -6,17 +6,17 @@ import com.vladmihalcea.hibernate.type.basic.Inet;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public abstract class UserModelMapper {
+public interface UserModelMapper {
 
-    abstract UserEntity toEntity(User user);
+    UserEntity toEntity(User user);
 
-    abstract User fromEntity(UserEntity userEntity);
+    User fromEntity(UserEntity userEntity);
 
-    String inetToString(Inet inet) {
+    default String inetToString(Inet inet) {
         return inet.getAddress();
     }
 
-    Inet toInet(String string) {
+    default Inet toInet(String string) {
         return new Inet(string);
     }
 }

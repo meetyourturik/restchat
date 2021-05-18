@@ -7,12 +7,12 @@ import org.mapstruct.Mapper;
 import java.sql.Timestamp;
 
 @Mapper(componentModel = "spring")
-public abstract class UserRestMapper {
-    abstract UserDTO toDTO(User user);
+public interface UserRestMapper {
+    UserDTO toDTO(User user);
 
-    abstract User fromDTO(UserDTO userDTO);
+    User fromDTO(UserDTO userDTO);
 
-    Timestamp timestampToString(String str) {
+    default Timestamp timestampToString(String str) {
         return Timestamp.valueOf(str);
     }
 }
