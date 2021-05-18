@@ -4,12 +4,14 @@ import com.epam.turik.restchat.data.UserRepository;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
     UserRepository userRepository;
@@ -22,20 +24,21 @@ public class UserService {
     }
 
     public void createUser(User user) {
-        UserEntity userEntity = userModelMapper.convertToEntity(user);
+        UserEntity userEntity = userModelMapper.toEntity(user);
+        log.warn(userEntity.toString());
         userRepository.save(userEntity);
     }
 
     public User getUserById(long id) throws UserNotFoundException {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return userModelMapper.convertToBusinessObject(userEntity);
+        return userModelMapper.fromEntity(userEntity);
     }
 
     public List<User> getAllUsers() {
         List<UserEntity> userEntities = (List<UserEntity>) userRepository.findAll();
         List<User> users = new ArrayList<>();
         for (UserEntity userEntity : userEntities) {
-            users.add(userModelMapper.convertToBusinessObject(userEntity));
+            users.add(userModelMapper.fromEntity(userEntity));
         }
         return users;
     }

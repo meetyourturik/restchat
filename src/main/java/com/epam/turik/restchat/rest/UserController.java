@@ -27,7 +27,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
-        return userRestMapper.convertToDTO(user);
+        return userRestMapper.toDTO(user);
     }
 
     @GetMapping("")
@@ -35,20 +35,20 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user: users) {
-            userDTOs.add(userRestMapper.convertToDTO(user));
+            userDTOs.add(userRestMapper.toDTO(user));
         }
         return userDTOs;
     }
 
     @PostMapping("")
     public void createUser(@RequestBody UserDTO userDTO) {
-        User user = userRestMapper.convertToBusinessObject(userDTO);
+        User user = userRestMapper.fromDTO(userDTO);
         userService.createUser(user);
     }
 
     @PatchMapping("")
     public void updateUser(@RequestBody UserDTO userDTO){
-        User user = userRestMapper.convertToBusinessObject(userDTO);
+        User user = userRestMapper.fromDTO(userDTO);
         userService.updateUser(user);
     }
 

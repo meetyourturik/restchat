@@ -1,7 +1,7 @@
 package com.epam.turik.restchat.model.objects.user;
 
-import com.epam.turik.restchat.data.objects.user.ChatPermission;
-import com.epam.turik.restchat.data.objects.user.UserStatus;
+import com.epam.turik.restchat.types.user.ChatPermission;
+import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.data.objects.user;
+package com.epam.turik.restchat.types.user;
 
 public enum ChatPermission {
     EVERYONE, FRIENDS_ONLY;

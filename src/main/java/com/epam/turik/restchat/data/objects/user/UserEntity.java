@@ -1,5 +1,7 @@
 package com.epam.turik.restchat.data.objects.user;
 
+import com.epam.turik.restchat.types.user.ChatPermission;
+import com.epam.turik.restchat.types.user.UserStatus;
 import com.vladmihalcea.hibernate.type.basic.Inet;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
