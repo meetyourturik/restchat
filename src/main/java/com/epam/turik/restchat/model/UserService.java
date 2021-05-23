@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -35,11 +34,12 @@ public class UserService {
 
     public List<User> getAllUsers() {
         List<UserEntity> userEntities = (List<UserEntity>) userRepository.findAll();
-        List<User> users = new ArrayList<>();
-        for (UserEntity userEntity : userEntities) {
-            users.add(userModelMapper.fromEntity(userEntity));
-        }
-        return users;
+        return userModelMapper.fromEntityList(userEntities);
+    }
+
+    public List<User> getUsersWithUsername(String username) {
+        List<UserEntity> userEntities = userRepository.findByUsername(username);
+        return userModelMapper.fromEntityList(userEntities);
     }
 
     public void updateUser(User user) throws UserNotFoundException {

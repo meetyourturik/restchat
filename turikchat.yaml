@@ -261,6 +261,24 @@ paths:
           $ref: '#/components/responses/rfc7807'
         500:
           description: internal server error
+  /users/{user_id}:
+    parameters:
+      - $ref: '#/components/parameters/user_id'
+    get:
+      summary: get users by id
+      tags:
+        - users
+      responses:
+        200:
+          description: user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        404:
+          description: user not found
+        500:
+          description: internal server error
     patch:
       summary: update user
       tags:
@@ -276,24 +294,6 @@ paths:
           description: user updated
         400:
           $ref: '#/components/responses/rfc7807'
-        404:
-          description: user not found
-        500:
-          description: internal server error
-  /users/{user_id}:
-    parameters:
-      - $ref: '#/components/parameters/user_id'
-    get:
-      summary: get users by id
-      tags:
-        - users
-      responses:
-        200:
-          description: user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/user'
         404:
           description: user not found
         500:

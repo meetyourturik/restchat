@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,13 +30,21 @@ public class UserController {
     }
 
     @GetMapping("")
-    public List<UserDTO> getAll() {
-        List<User> users = userService.getAllUsers();
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user: users) {
-            userDTOs.add(userRestMapper.toDTO(user));
+    public List<UserDTO> getAll(@RequestParam(required = false) String username,
+                                @RequestParam(required = false) String language,
+                                @RequestParam(required = false) String status,
+                                @RequestParam(required = false) String chatPermission) {
+        log.warn(username);
+        log.warn(language);
+        log.warn(status);
+        log.warn(chatPermission);
+        List<User> users;
+        if (username != null) {
+            users = userService.getUsersWithUsername(username);
+        } else {
+            users = userService.getAllUsers();
         }
-        return userDTOs;
+        return userRestMapper.toDTOList(users);
     }
 
     @PostMapping("")
@@ -46,9 +53,9 @@ public class UserController {
         userService.createUser(user);
     }
 
-    @PatchMapping("")
-    public void updateUser(@RequestBody UserDTO userDTO){
-        User user = userRestMapper.fromDTO(userDTO);
+    @PatchMapping("/{id}")
+    public void updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        User user = userService.getUserById(id);
         userService.updateUser(user);
     }
 
