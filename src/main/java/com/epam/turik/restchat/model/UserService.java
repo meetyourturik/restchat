@@ -4,6 +4,9 @@ import com.epam.turik.restchat.data.UserRepository;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
+import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.types.user.ChatPermission;
+import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,8 +40,14 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public List<User> getUsersWithUsername(String username) {
-        List<UserEntity> userEntities = userRepository.findByUsername(username);
+    public List<User> getUsersByFilter(UserFilter userFilter) {
+        List<UserEntity> userEntities =
+                userRepository.findByUsernameStartsWithAndStatusAndLanguageAndChatPermission(
+                        userFilter.getUsername(),
+                        UserStatus.valueOf(userFilter.getStatus()),
+                        userFilter.getLanguage(),
+                        ChatPermission.valueOf(userFilter.getChatPermission())
+                );
         return userModelMapper.fromEntityList(userEntities);
     }
 

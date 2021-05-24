@@ -4,6 +4,7 @@ import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.objects.ReportDTO;
 import com.epam.turik.restchat.rest.objects.UserDTO;
+import com.epam.turik.restchat.rest.objects.UserFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,20 +31,10 @@ public class UserController {
     }
 
     @GetMapping("")
-    public List<UserDTO> getAll(@RequestParam(required = false) String username,
-                                @RequestParam(required = false) String language,
-                                @RequestParam(required = false) String status,
-                                @RequestParam(required = false) String chatPermission) {
-        log.warn(username);
-        log.warn(language);
-        log.warn(status);
-        log.warn(chatPermission);
-        List<User> users;
-        if (username != null) {
-            users = userService.getUsersWithUsername(username);
-        } else {
-            users = userService.getAllUsers();
-        }
+    public List<UserDTO> getAll(UserFilter userFilter) {
+//        List<User> users;
+        List<User> users = userService.getUsersByFilter(userFilter);
+//        users = userService.getAllUsers();
         return userRestMapper.toDTOList(users);
     }
 
