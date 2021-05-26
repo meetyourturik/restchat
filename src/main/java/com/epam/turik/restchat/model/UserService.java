@@ -5,13 +5,12 @@ import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.rest.objects.UserFilter;
-import com.epam.turik.restchat.types.user.ChatPermission;
-import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,15 +39,20 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public List<User> getUsersByFilter(UserFilter userFilter) {
-        List<UserEntity> userEntities =
-                userRepository.findByUsernameStartsWithAndStatusAndLanguageAndChatPermission(
-                        userFilter.getUsername(),
-                        UserStatus.valueOf(userFilter.getStatus()),
-                        userFilter.getLanguage(),
-                        ChatPermission.valueOf(userFilter.getChatPermission())
-                );
-        return userModelMapper.fromEntityList(userEntities);
+    public List<User> filterUsers(List<User> users, UserFilter userFilter) {
+        String filterUserName = userFilter.getUsername();
+        String filterLanguage = userFilter.getLanguage();
+        String filterStatus = userFilter.getStatus();
+        String filterChatPermission = userFilter.getChatPermission();
+        return users.stream().filter( user ->
+                filterUserName == null || user.getUsername().startsWith(filterUserName)
+            ).filter( user ->
+                filterLanguage == null || user.getLanguage().equals(filterLanguage)
+            ).filter( user ->
+                filterStatus == null || user.getStatus().name().equals(filterStatus)
+            ).filter( user ->
+                filterChatPermission == null || user.getChatPermission().name().equals(filterChatPermission)
+            ).collect(Collectors.toList());
     }
 
     public void updateUser(User user) throws UserNotFoundException {

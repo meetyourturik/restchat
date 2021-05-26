@@ -221,7 +221,7 @@ components:
     rfc7807:
       description: https://datatracker.ietf.org/doc/html/rfc7807
       content:
-        application/json:
+        application/problem+json:
           schema: 
             $ref: '#/components/schemas/rfc7807Error'
 paths:
