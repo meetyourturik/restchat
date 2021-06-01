@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Entity(name = "user")
 @Table(name = "user", schema = "public")
 @TypeDef(
         name = "pgEnum",

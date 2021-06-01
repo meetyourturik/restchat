@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,20 +38,15 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public List<User> filterUsers(List<User> users, UserFilter userFilter) {
-        String filterUserName = userFilter.getUsername();
-        String filterLanguage = userFilter.getLanguage();
-        String filterStatus = userFilter.getStatus();
-        String filterChatPermission = userFilter.getChatPermission();
-        return users.stream().filter( user ->
-                filterUserName == null || user.getUsername().startsWith(filterUserName)
-            ).filter( user ->
-                filterLanguage == null || user.getLanguage().equals(filterLanguage)
-            ).filter( user ->
-                filterStatus == null || user.getStatus().name().equals(filterStatus)
-            ).filter( user ->
-                filterChatPermission == null || user.getChatPermission().name().equals(filterChatPermission)
-            ).collect(Collectors.toList());
+    public List<User> getUsersByFilter(UserFilter userFilter) {
+        log.warn(userFilter.toString());
+        String username = userFilter.getUsername() != null ? userFilter.getUsername() : "";
+        String language = userFilter.getLanguage() != null ? userFilter.getLanguage() : "";
+        String status = userFilter.getStatus() != null ? userFilter.getStatus().name() : "";
+        String chatPermission = userFilter.getChatPermission() != null ? userFilter.getChatPermission().name() : "";
+
+        List<UserEntity> userEntities = userRepository.findByUserFilter(username, language, status, chatPermission);
+        return userModelMapper.fromEntityList(userEntities);
     }
 
     public void updateUser(User user) throws UserNotFoundException {

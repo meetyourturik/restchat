@@ -32,8 +32,7 @@ public class UserController {
 
     @GetMapping("")
     public List<UserDTO> getAll(UserFilter userFilter) {
-        List<User> users = userService.getAllUsers();
-        users = userService.filterUsers(users, userFilter);
+        List<User> users = userService.getUsersByFilter(userFilter);
         return userRestMapper.toDTOList(users);
     }
 
