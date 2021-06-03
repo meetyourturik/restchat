@@ -5,6 +5,7 @@ import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.objects.ReportDTO;
 import com.epam.turik.restchat.rest.objects.UserDTO;
 import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.rest.objects.PatchString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public void updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public void updateUser(@PathVariable Long id, @RequestBody List<PatchString> userUpdateDTO) {
+        // https://www.baeldung.com/spring-rest-json-patch
+        log.warn(userUpdateDTO.toString());
         User user = userService.getUserById(id);
         userService.updateUser(user);
     }
