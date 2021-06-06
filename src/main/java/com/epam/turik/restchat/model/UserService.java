@@ -5,6 +5,9 @@ import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +17,15 @@ import java.util.List;
 @Slf4j
 @Service
 public class UserService {
-    UserRepository userRepository;
-    UserModelMapper userModelMapper;
+    private final UserRepository userRepository;
+    private final UserModelMapper userModelMapper;
+    private final PatchService patchService;
 
     @Autowired
-    UserService(UserRepository userRepository, UserModelMapper userModelMapper) {
+    UserService(UserRepository userRepository, UserModelMapper userModelMapper, PatchService patchService) {
         this.userRepository = userRepository;
         this.userModelMapper = userModelMapper;
+        this.patchService = patchService;
     }
 
     public void createUser(User user) {
@@ -49,11 +54,11 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public void updateUser(User user) throws UserNotFoundException {
+    public void updateUser(User user, JsonPatch patch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
         // user here is not really User, maybe should be some separate thing
-        UserEntity userEntity = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
-        userEntity.setUsername(user.getUsername());
-        userRepository.save(userEntity);
+        User patched = patchService.applyPatch(user, patch);
+        UserEntity updatedEntity = userModelMapper.toEntity(patched);
+        userRepository.save(updatedEntity);
     }
 
     public void deleteUser(long id) {
