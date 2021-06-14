@@ -10,6 +10,8 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,18 +46,35 @@ public class UserService {
     }
 
     public List<User> getUsersByFilter(UserFilter userFilter) {
-        log.warn(userFilter.toString());
-        String username = userFilter.getUsername() != null ? userFilter.getUsername() : "";
-        String language = userFilter.getLanguage() != null ? userFilter.getLanguage() : "";
-        String status = userFilter.getStatus() != null ? userFilter.getStatus().name() : "";
-        String chatPermission = userFilter.getChatPermission() != null ? userFilter.getChatPermission().name() : "";
+        UserEntity exampleEntity = new UserEntity();
 
-        List<UserEntity> userEntities = userRepository.findByUserFilter(username, language, status, chatPermission);
+        ExampleMatcher matcher = ExampleMatcher.matchingAll();
+
+        if (userFilter.getUsername() != null) {
+            exampleEntity.setUsername(userFilter.getUsername());
+            matcher = matcher.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
+        }
+
+        if (userFilter.getLanguage() != null) {
+            exampleEntity.setLanguage(userFilter.getLanguage());
+            matcher = matcher.withMatcher("language", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
+        }
+
+        if (userFilter.getStatus() != null) {
+            exampleEntity.setStatus(userFilter.getStatus());
+            matcher = matcher.withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact());
+        }
+
+        if (userFilter.getChatPermission() != null) {
+            exampleEntity.setChatPermission(userFilter.getChatPermission());
+            matcher = matcher.withMatcher("chatPermission", ExampleMatcher.GenericPropertyMatchers.exact());
+        }
+
+        List<UserEntity> userEntities = userRepository.findAll(Example.of(exampleEntity, matcher));
         return userModelMapper.fromEntityList(userEntities);
     }
 
     public void updateUser(User user, JsonPatch patch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
-        // user here is not really User, maybe should be some separate thing
         User patched = patchService.applyPatch(user, patch);
         UserEntity updatedEntity = userModelMapper.toEntity(patched);
         userRepository.save(updatedEntity);

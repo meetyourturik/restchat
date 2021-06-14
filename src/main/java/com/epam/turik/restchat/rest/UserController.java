@@ -10,6 +10,7 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,12 @@ public class UserController {
 
     @GetMapping("")
     public List<UserDTO> getAll(UserFilter userFilter) {
-        List<User> users = userService.getUsersByFilter(userFilter);
+        List<User> users;
+        if (userFilter.isEmpty()) {
+            users = userService.getAllUsers();
+        } else {
+            users = userService.getUsersByFilter(userFilter);
+        }
         return userRestMapper.toDTOList(users);
     }
 
@@ -45,6 +51,7 @@ public class UserController {
         userService.createUser(user);
     }
 
+    @Transactional
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public void updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
         User user = userService.getUserById(id);

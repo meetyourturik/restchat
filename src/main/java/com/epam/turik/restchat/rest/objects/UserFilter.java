@@ -10,4 +10,8 @@ public class UserFilter {
     private String language;
     private UserStatus status;
     private ChatPermission chatPermission;
+
+    public boolean isEmpty() {
+        return username == null && language == null && status == null && chatPermission == null;
+    }
 }
