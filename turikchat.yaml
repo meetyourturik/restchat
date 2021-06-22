@@ -201,6 +201,10 @@ components:
           type: string
         title:
           type: string
+        status:
+          type: number
+        detail:
+          type: string
         invalid-params:
           $ref: '#/components/schemas/rfc7807InvalidParamsArray'
     rfc7807InvalidParamsArray:

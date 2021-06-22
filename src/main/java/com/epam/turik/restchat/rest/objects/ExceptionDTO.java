@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ExceptionDTO {
-    String text;
-    String code;
+    String type;
+    String title;
+    int code;
+    // String detail;
 }
