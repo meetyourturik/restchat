@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<UserEntity, Long> {
+public interface UserRepository extends CrudRepository<UserEntity, Long>, CustomUserRepository {
 
     List<UserEntity> findAll(Example<UserEntity> userEntityExample);
 

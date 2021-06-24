@@ -45,6 +45,8 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
+    // кривошеев против!
+    @Deprecated
     public List<User> getUsersByFilter(UserFilter userFilter) {
         UserEntity exampleEntity = new UserEntity();
 
