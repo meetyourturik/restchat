@@ -1,6 +1,6 @@
 package com.epam.turik.restchat.model;
 
-import com.epam.turik.restchat.data.UserRepository;
+import com.epam.turik.restchat.data.repository.UserRepository;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
@@ -36,7 +36,8 @@ public class UserService {
     }
 
     public User getUserById(long id) throws UserNotFoundException {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        // instead of CrudRepository's 'findById' using custom here just to try it out
+        UserEntity userEntity = userRepository.findUserById(id).orElseThrow(UserNotFoundException::new);
         return userModelMapper.fromEntity(userEntity);
     }
 

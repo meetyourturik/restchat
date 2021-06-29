@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.data;
+package com.epam.turik.restchat.data.repository;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import org.springframework.data.domain.Example;

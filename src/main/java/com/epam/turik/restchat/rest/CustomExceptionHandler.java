@@ -1,5 +1,6 @@
 package com.epam.turik.restchat.rest;
 
+import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.rest.objects.ExceptionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,16 @@ public class CustomExceptionHandler {
         return new ExceptionDTO("BindException","Wrong ENUM parameter in request", HttpStatus.BAD_REQUEST.value());
     }
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ExceptionDTO handleUserNotFound() {
+        // разобраться, когда какие колько параметров нужно https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
+        return new ExceptionDTO("UserNotFoundException","can't find user with id", HttpStatus.NOT_FOUND.value());
+    }
+
+    /*
     @ExceptionHandler(value = Exception.class)
     public ExceptionDTO handleDefault(HttpServletRequest request, Exception e) {
         return new ExceptionDTO("Default Exception","something went wrong, dunno what tho", HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+    */
 }
