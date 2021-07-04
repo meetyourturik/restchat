@@ -1,8 +1,14 @@
 package com.epam.turik.restchat.model.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "user not found")
 public class UserNotFoundException extends RuntimeException {
+    private final long id;
+
+    public UserNotFoundException(long id) {
+        super();
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 }

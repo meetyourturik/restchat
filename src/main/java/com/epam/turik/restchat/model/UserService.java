@@ -37,7 +37,7 @@ public class UserService {
 
     public User getUserById(long id) throws UserNotFoundException {
         // instead of CrudRepository's 'findById' using custom here just to try it out
-        UserEntity userEntity = userRepository.findUserById(id).orElseThrow(UserNotFoundException::new);
+        UserEntity userEntity = userRepository.findUserById(id).orElseThrow(() -> new UserNotFoundException(id));
         return userModelMapper.fromEntity(userEntity);
     }
 

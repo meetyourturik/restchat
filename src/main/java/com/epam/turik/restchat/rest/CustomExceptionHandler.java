@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestControllerAdvice
@@ -17,13 +18,13 @@ public class CustomExceptionHandler {
     // wrong enum
     @ExceptionHandler(value = BindException.class)
     public ExceptionDTO handleEnum(BindException ex, HttpServletRequest request) {
+        // somehow determine enum class from exception and provide viable options
         return new ExceptionDTO("BindException","Wrong ENUM parameter in request", HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)
-    public ExceptionDTO handleUserNotFound() {
-        // разобраться, когда какие колько параметров нужно https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
-        return new ExceptionDTO("UserNotFoundException","can't find user with id", HttpStatus.NOT_FOUND.value());
+    public ExceptionDTO handleUserNotFound(UserNotFoundException e) {
+        return new ExceptionDTO("UserNotFoundException","can't find user with id " + e.getId(), HttpStatus.NOT_FOUND.value());
     }
 
     /*
