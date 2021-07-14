@@ -77,7 +77,7 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public void updateUser(User user, JsonPatch patch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
+    public void updateUser(User user, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
         User patched = patchService.applyPatch(user, patch);
         UserEntity updatedEntity = userModelMapper.toEntity(patched);
         userRepository.save(updatedEntity);
