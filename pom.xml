@@ -15,7 +15,7 @@
 	<description>chat functioning via rest api</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<testcontainers.version>1.14.3</testcontainers.version>
+		<testcontainers.version>1.15.1</testcontainers.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 		<lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
 	</properties>

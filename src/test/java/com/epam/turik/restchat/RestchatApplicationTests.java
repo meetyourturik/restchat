@@ -1,9 +1,9 @@
 package com.epam.turik.restchat;
 
+import com.epam.turik.restchat.infrastructure.ComponentTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@ComponentTest
 class RestchatApplicationTests {
 
 	@Test
