@@ -52,6 +52,7 @@ public class UserController {
     @GetMapping("")
     public List<UserDTO> getAll(UserFilter userFilter) {
         List<User> users;
+        log.warn(userFilter.toString());
         if (userFilter.isEmpty()) {
             users = userService.getAllUsers();
         } else {

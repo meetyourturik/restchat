@@ -1,12 +1,16 @@
 package com.epam.turik.restchat.rest;
 
+import com.epam.turik.restchat.rest.exceptions.InvalidEnumFieldException;
 import com.epam.turik.restchat.rest.exceptions.InvalidFieldException;
 import com.epam.turik.restchat.rest.exceptions.ProblemException;
+import com.epam.turik.restchat.rest.exceptions.ShouldHaveBeenThrownEarlierException;
 import com.epam.turik.restchat.rest.objects.ProblemDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -15,18 +19,26 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    // wrong enum
-//    @ExceptionHandler(value = BindException.class)
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    public ProblemDTO handleEnum(BindException ex) {
-//        return new ProblemDTO("BindException","Wrong ENUM parameter in request", HttpStatus.BAD_REQUEST.value());
-//    }
-//    @ExceptionHandler(value = UserNotFoundException.class)
-//    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-//    public ExceptionDTO handleUserNotFound(UserNotFoundException e) {
-//        return new ExceptionDTO("UserNotFoundException","can't find user with id " + e.getId(), HttpStatus.NOT_FOUND.value());
-//    }
+    @ExceptionHandler(value = PSQLException.class)
+    public ResponseEntity<ProblemDTO> handle(PSQLException exception) {
+        log.warn("psql");
+        ShouldHaveBeenThrownEarlierException ex = new ShouldHaveBeenThrownEarlierException(exception.getServerErrorMessage().getDetail());
+        return response(ex);
+    }
 
+    // должен ловиться раньше видимо
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ProblemDTO> handle(IllegalArgumentException exception) {
+        log.warn("illegal arg");
+        ShouldHaveBeenThrownEarlierException ex = new ShouldHaveBeenThrownEarlierException(exception.getLocalizedMessage());
+        return response(ex);
+    }
+
+    @ExceptionHandler(value = BindException.class)
+    public ResponseEntity<ProblemDTO> handle(BindException exception) {
+        InvalidEnumFieldException ex = new InvalidEnumFieldException(exception.getTarget().getClass().getName(), exception.getFieldErrors());
+        return response(ex);
+    }
 
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ProblemDTO> handle(MethodArgumentTypeMismatchException exception) {
