@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @ControllerAdvice
 public class ApiExceptionHandler {
 
+    // например, не передаем обязательное поле при создании
     @ExceptionHandler(value = PSQLException.class)
     public ResponseEntity<ProblemDTO> handle(PSQLException exception) {
         log.warn("psql");
@@ -27,6 +28,7 @@ public class ApiExceptionHandler {
     }
 
     // должен ловиться раньше видимо
+    // кривой енум при создании юзера
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<ProblemDTO> handle(IllegalArgumentException exception) {
         log.warn("illegal arg");
@@ -34,6 +36,7 @@ public class ApiExceptionHandler {
         return response(ex);
     }
 
+    // кривой енум в юзерфильтре
     @ExceptionHandler(value = BindException.class)
     public ResponseEntity<ProblemDTO> handle(BindException exception) {
         InvalidEnumFieldException ex = new InvalidEnumFieldException(exception.getTarget().getClass().getName(), exception.getFieldErrors());

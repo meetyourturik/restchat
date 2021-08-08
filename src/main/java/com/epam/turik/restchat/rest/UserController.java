@@ -62,9 +62,10 @@ public class UserController {
     }
 
     @PostMapping("")
-    public void createUser(@RequestBody UserDTO userDTO) {
+    public UserDTO createUser(@RequestBody UserDTO userDTO) {
         User user = userRestMapper.fromDTO(userDTO);
-        userService.createUser(user);
+        User returnUser = userService.createUser(user);
+        return userRestMapper.toDTO(returnUser);
     }
 
     @Transactional

@@ -30,9 +30,10 @@ public class UserService {
         this.patchService = patchService;
     }
 
-    public void createUser(User user) {
+    public User createUser(User user) {
         UserEntity userEntity = userModelMapper.toEntity(user);
-        userRepository.save(userEntity);
+        UserEntity returnUser = userRepository.save(userEntity);
+        return userModelMapper.fromEntity(returnUser);
     }
 
     public User getUserById(long id) throws UserNotFoundException {
