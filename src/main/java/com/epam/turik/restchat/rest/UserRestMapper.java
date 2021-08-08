@@ -18,6 +18,8 @@ public interface UserRestMapper {
     List<User> fromDTOList(List<UserDTO> userDTO);
 
     default Timestamp timestampToString(String str) {
-        return Timestamp.valueOf(str);
+        return str == null ? null : Timestamp.valueOf(str);
     }
+
+    default String stringToTimestamp(Timestamp timestamp) {return timestamp == null ? null : timestamp.toString();}
 }
