@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.sql.SQLException;
+
 @Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler {
 
     // например, не передаем обязательное поле при создании
-    @ExceptionHandler(value = PSQLException.class)
+    @ExceptionHandler(value = PSQLException.class)  // SQLException ?
     public ResponseEntity<ProblemDTO> handle(PSQLException exception) {
-        log.warn("psql");
+        log.warn("sql");
         ShouldHaveBeenThrownEarlierException ex = new ShouldHaveBeenThrownEarlierException(exception.getServerErrorMessage().getDetail());
         return response(ex);
     }
