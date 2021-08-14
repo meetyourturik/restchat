@@ -1,32 +1,39 @@
 package com.epam.turik.restchat;
 
 import com.epam.turik.restchat.infrastructure.ComponentTest;
-import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.UserController;
 import com.epam.turik.restchat.rest.UserRestMapper;
 import com.epam.turik.restchat.rest.objects.UserDTO;
-import com.epam.turik.restchat.rest.objects.UserFilter;
-import com.epam.turik.restchat.types.user.ChatPermission;
-import com.epam.turik.restchat.types.user.UserStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @ComponentTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTests {
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -38,57 +45,66 @@ class UserControllerTests {
 	private UserRestMapper userRestMapper;
 
 	@Test
+	@Order(1)
 	void contextLoads() {
 		assertThat(userController).isNotNull();
 	}
 
 	@SneakyThrows
 	@Test
+	@Order(2)
 	void getAllUsersReturnsNullWhenNoUsers() {
 		mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk());
 	}
 
 	@SneakyThrows
 	@Test
+	@Order(3)
 	void creatingUserMockMvc() {
-		User user = new User();
+		UserDTO user = new UserDTO();
 		user.setUsername("test user");
-		user.setStatus(UserStatus.ACTIVE);
+		user.setStatus("ACTIVE");
 		user.setEmail("test@user.us");
 		user.setTimezone("EN/US");
 		user.setLanguage("english");
-		user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
-		user.setChatPermission(ChatPermission.EVERYONE);
+		user.setDeletionDate("2021-05-08 13:37:58.068");
+		user.setChatPermission("EVERYONE");
 		user.setIp("192.168.0.2");
 
-		UserDTO userDTO = userRestMapper.toDTO(user);
+		String s = mapper.writeValueAsString(user);
 
-		mockMvc.perform(post("/users", userDTO)).andDo(print());
+		mockMvc.perform(
+			post("/users")
+						.content(s)
+						.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
 	}
 
+	@SneakyThrows
 	@Test
-	void creatingUser() {
-		User user = new User();
-		user.setUsername("test user");
-		user.setStatus(UserStatus.ACTIVE);
-		user.setEmail("test@user.us");
-		user.setTimezone("EN/US");
-		user.setLanguage("english");
-		user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
-		user.setChatPermission(ChatPermission.EVERYONE);
-		user.setIp("192.168.0.2");
+	@Order(4)
+	void getAllUsersWhenOneIsCreated() {
+		ResultActions resultActions = mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk());
+		MvcResult result = resultActions.andReturn();
+		List<UserDTO> users = (List<UserDTO>) mapper.readValue(result.getResponse().getContentAsString(), List.class);
+		assertThat(users.size()).isEqualTo(1);
+	}
 
-		UserDTO userDTO = userRestMapper.toDTO(user);
+	@SneakyThrows
+	@Test
+	@Order(5)
+	void deleteUser() {
+		mockMvc.perform(delete("/users/1")).andExpect(status().isOk());
+	}
 
-		UserDTO createdUser = userController.createUser(userDTO);
-		long id = createdUser.getId();
-		user.setId(id);
-
-		UserFilter filter = new UserFilter();
-		List<UserDTO> users = userController.getAll(filter);
-		assertThat(users).isNotEmpty();
-		UserDTO onlyUser = users.get(0);
-
-		assertThat(onlyUser).isEqualTo(createdUser);
+	@SneakyThrows
+	@Test
+	@Order(6)
+	void getAllUsersWhenOneIsDeleted() {
+		ResultActions resultActions = mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk());
+		MvcResult result = resultActions.andReturn();
+		List<UserDTO> users = (List<UserDTO>) mapper.readValue(result.getResponse().getContentAsString(), List.class);
+		assertThat(users.size()).isEqualTo(0);
 	}
 }
