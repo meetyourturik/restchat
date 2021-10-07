@@ -24,7 +24,7 @@ public class UserService {
     private final PatchService patchService;
 
     @Autowired
-    UserService(UserRepository userRepository, UserModelMapper userModelMapper, PatchService patchService) {
+    public UserService(UserRepository userRepository, UserModelMapper userModelMapper, PatchService patchService) {
         this.userRepository = userRepository;
         this.userModelMapper = userModelMapper;
         this.patchService = patchService;
