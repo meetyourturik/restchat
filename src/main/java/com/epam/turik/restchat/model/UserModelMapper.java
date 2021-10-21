@@ -19,10 +19,10 @@ public interface UserModelMapper {
     List<User> fromEntityList(List<UserEntity> userEntity);
 
     default String inetToString(Inet inet) {
-        return inet.getAddress();
+        return inet == null ? null : inet.getAddress();
     }
 
     default Inet toInet(String string) {
-        return new Inet(string);
+        return string == null ? null : new Inet(string);
     }
 }

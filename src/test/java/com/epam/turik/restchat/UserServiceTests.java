@@ -7,38 +7,60 @@ import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.objects.user.User;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 @Slf4j
-@SpringBootTest(properties="spring.main.lazy-initialization=true")
-public class UserServiceTests {
+@ExtendWith(MockitoExtension.class)
+class UserServiceTests {
     @Mock
     UserRepository userRepository;
     @Mock
     UserModelMapper userModelMapper;
     @Mock
     PatchService patchService;
-
-    UserService userService = new UserService(userRepository, userModelMapper, patchService);
+    @InjectMocks
+    UserService userService;
 
     @Test
-    public void getUserByIdTest() {
-        UserEntity userEntity = new UserEntity();
-        Mockito.when(userRepository.findUserById(1l)).thenReturn(Optional.of(userEntity));
+    @DisplayName("should return user by id")
+    void getUserByIdTest() {
+        // given - Готовим тестовые данные
+        long id = 1l;
+        UserEntity userEntity = mock(UserEntity.class);
+        userEntity.setUsername("turik");
+        userEntity.setId(id);
+        // ... other fields
         User user = new User();
-        user.setId(1l);
-        Mockito.when(userModelMapper.fromEntity(userEntity)).thenReturn(user);
-        User user1 = userService.getUserById(1l);
-        System.out.println(user1);
-        Assert.assertEquals(user, user);
-        Assert.assertEquals((long) user.getId(), 1l);
+        user.setUsername("turik");
+        user.setId(id);
+        // when
+        when(userRepository.findUserById(eq(id))).thenReturn(Optional.of(userEntity));
+        when(userModelMapper.fromEntity(eq(userEntity))).thenReturn(user);
+        // then
+        User result = userService.getUserById(id);
 
+        assertEquals(result, user);
+        verify(userRepository, times(1)).findUserById(eq(id));
+        verify(userModelMapper, times(1)).fromEntity(eq(userEntity));
     }
 
+    @Test
+    @DisplayName("should throw UserNotFoundException when no user found")
+    void throwsWhenUserNotFoundTest() {
+        // given
+        Optional<UserEntity> userEntity = Optional.empty();
+
+    }
 }
