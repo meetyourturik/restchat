@@ -55,12 +55,4 @@ class UserServiceTests {
         verify(userRepository, times(1)).findUserById(eq(id));
         verify(userModelMapper, times(1)).fromEntity(eq(userEntity));
     }
-
-    @Test
-    @DisplayName("should throw UserNotFoundException when no user found")
-    void throwsWhenUserNotFoundTest() {
-        // given
-        Optional<UserEntity> userEntity = Optional.empty();
-
-    }
 }

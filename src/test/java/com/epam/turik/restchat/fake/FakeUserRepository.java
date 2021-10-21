@@ -1,13 +1,10 @@
-package com.epam.turik.restchat;
+package com.epam.turik.restchat.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
 import org.springframework.data.domain.Example;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class FakeUserRepository implements UserRepository {
     private Map<Long, UserEntity> users = new HashMap<>();
@@ -15,7 +12,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public Optional<UserEntity> findUserById(Long id) {
-        return Optional.of(users.get(id));
+        return users.containsKey(id) ? Optional.of(users.get(id)) : Optional.empty();
     }
 
     @Override
@@ -25,14 +22,22 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public <S extends UserEntity> S save(S s) {
-        users.put(counter, s);
-        s.setId(counter++);
+        long nextId = counter++;
+        s.setId(nextId);
+        users.put(nextId, s);
         return s;
     }
 
     @Override
     public <S extends UserEntity> Iterable<S> saveAll(Iterable<S> iterable) {
-        return null;
+        Iterator<S> iterator = iterable.iterator();
+        while (iterator.hasNext()) {
+            S s = iterator.next();
+            long nextId = counter++;
+            s.setId(nextId);
+            users.put(nextId, s);
+        }
+        return iterable;
     }
 
     @Override
@@ -42,12 +47,12 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public boolean existsById(Long aLong) {
-        return false;
+        return users.containsKey(aLong);
     }
 
     @Override
     public Iterable<UserEntity> findAll() {
-        return null;
+        return new ArrayList<UserEntity>(users.values());
     }
 
     @Override
@@ -57,12 +62,12 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public long count() {
-        return 0;
+        return users.size();
     }
 
     @Override
     public void deleteById(Long aLong) {
-
+        users.remove(aLong);
     }
 
     @Override
