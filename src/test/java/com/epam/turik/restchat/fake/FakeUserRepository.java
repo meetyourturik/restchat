@@ -2,13 +2,15 @@ package com.epam.turik.restchat.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
+import com.epam.turik.restchat.types.user.ChatPermission;
+import com.epam.turik.restchat.types.user.UserStatus;
 import org.springframework.data.domain.Example;
 
 import java.util.*;
 
 public class FakeUserRepository implements UserRepository {
-    private Map<Long, UserEntity> users = new HashMap<>();
-    private long counter = 1l;
+    private final Map<Long, UserEntity> users = new HashMap<>();
+    private long counter = 1L;
 
     @Override
     public Optional<UserEntity> findUserById(Long id) {
@@ -17,7 +19,24 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public List<UserEntity> findAll(Example<UserEntity> userEntityExample) {
-        return null;
+        UserEntity probe = userEntityExample.getProbe();
+        List<UserEntity> result = new ArrayList<>();
+
+        String username = probe.getUsername();
+        String language = probe.getLanguage();
+        UserStatus status = probe.getStatus();
+        ChatPermission permission = probe.getChatPermission();
+
+        for (UserEntity entity : users.values()) {
+            if ((username == null || username.isEmpty() || entity.getUsername().startsWith(username)) &&
+                (language == null || language.isEmpty() || entity.getLanguage().startsWith(language)) &&
+                (status == null || entity.getStatus().equals(status)) &&
+                (permission == null || entity.getChatPermission().equals(permission))
+            ) {
+                result.add(entity);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -30,9 +49,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public <S extends UserEntity> Iterable<S> saveAll(Iterable<S> iterable) {
-        Iterator<S> iterator = iterable.iterator();
-        while (iterator.hasNext()) {
-            S s = iterator.next();
+        for (S s : iterable) {
             long nextId = counter++;
             s.setId(nextId);
             users.put(nextId, s);
@@ -42,7 +59,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public Optional<UserEntity> findById(Long aLong) {
-        return Optional.empty();
+        return this.findUserById(aLong);
     }
 
     @Override
@@ -52,7 +69,7 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public Iterable<UserEntity> findAll() {
-        return new ArrayList<UserEntity>(users.values());
+        return new ArrayList<>(users.values());
     }
 
     @Override
@@ -82,6 +99,6 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public void deleteAll() {
-
+        users.clear();
     }
 }
