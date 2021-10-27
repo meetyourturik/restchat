@@ -41,18 +41,28 @@ public class FakeUserRepository implements UserRepository {
 
     @Override
     public <S extends UserEntity> S save(S s) {
-        long nextId = counter++;
-        s.setId(nextId);
-        users.put(nextId, s);
+        Long id = s.getId();
+        if (id != null) {
+            users.put(id, s);
+        } else {
+            long nextId = counter++;
+            s.setId(nextId);
+            users.put(nextId, s);
+        }
         return s;
     }
 
     @Override
     public <S extends UserEntity> Iterable<S> saveAll(Iterable<S> iterable) {
         for (S s : iterable) {
-            long nextId = counter++;
-            s.setId(nextId);
-            users.put(nextId, s);
+            Long id = s.getId();
+            if (id != null) {
+                users.put(id, s);
+            } else {
+                long nextId = counter++;
+                s.setId(nextId);
+                users.put(nextId, s);
+            }
         }
         return iterable;
     }

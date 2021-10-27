@@ -70,9 +70,10 @@ public class UserController {
 
     @Transactional
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
-    public void updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
         User user = userService.getUserById(id);
-        userService.updateUser(user, patch);
+        User updatedUser = userService.updateUser(user, patch);
+        return userRestMapper.toDTO(updatedUser);
     }
 
     @DeleteMapping("/{id}")

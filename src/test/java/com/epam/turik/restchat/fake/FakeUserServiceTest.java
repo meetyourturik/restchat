@@ -10,7 +10,14 @@ import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.objects.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.github.fge.jackson.JacksonUtils;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.JsonPatchOperation;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +28,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mapstruct.factory.Mappers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -286,12 +294,48 @@ public class FakeUserServiceTest {
             assertEquals(1, result.size());
         }
 
+        @Test
+        @DisplayName("should return empty list when no users found")
+        public void getZeroUsers() {
+            // given
+            UserRepository repository = new FakeUserRepository();
+            UserService userService = getUserService(repository);
+            UserFilter filter = new UserFilter();
+            filter.setUsername("wonder");
+            // when
+            repository.saveAll(entities);
+            // then
+            List<User> result = userService.getUsersByFilter(filter);
+            assertEquals(0, result.size());
+        }
     }
 
     @Nested
     @DisplayName("updateUser tests")
     class UpdateUserTest {
-        // TODO
+
+        @Test
+        public void testUpdate() throws IOException, JsonPatchException {
+            JsonNode operations = JsonLoader.fromResource("/operations.json");
+            ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
+            List<JsonPatchOperation> operationList = new ArrayList<>();
+            for (JsonNode node : operations) {
+                JsonPatchOperation op = reader.readValue(node);
+                operationList.add(op);
+            }
+            JsonPatch patch = new JsonPatch(operationList);
+            UserService userService = getUserService();
+
+            User user = new User();
+            user.setUsername("john doe");
+            user.setEmail("john_doe@email.org");
+
+            User updatedUser = userService.updateUser(user, patch);
+
+            assertEquals("default", updatedUser.getUsername());
+            assertEquals("default@email.org", updatedUser.getEmail());
+        }
+
     }
 
     @Nested
