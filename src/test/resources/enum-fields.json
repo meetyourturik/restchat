@@ -1,0 +1,4 @@
+[
+  { "op": "replace", "path": "/status", "value": "INACTIVE" },
+  { "op": "replace", "path": "/chatPermission", "value": "FRIENDS_ONLY" }
+]

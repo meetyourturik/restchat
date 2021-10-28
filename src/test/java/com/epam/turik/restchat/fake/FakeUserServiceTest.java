@@ -10,6 +10,7 @@ import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.objects.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mapstruct.factory.Mappers;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -313,27 +315,65 @@ public class FakeUserServiceTest {
     @Nested
     @DisplayName("updateUser tests")
     class UpdateUserTest {
+        private UserService userService;
+        private JsonPatch patch;
 
-        @Test
-        public void testUpdate() throws IOException, JsonPatchException {
-            JsonNode operations = JsonLoader.fromResource("/operations.json");
+        @BeforeEach
+        private void init(TestInfo info) throws IOException {
+            userService = getUserService();
+
             ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
             List<JsonPatchOperation> operationList = new ArrayList<>();
+            JsonNode operations = JsonLoader.fromResource((String) info.getTags().toArray()[0]); // should probably use fromString
             for (JsonNode node : operations) {
                 JsonPatchOperation op = reader.readValue(node);
                 operationList.add(op);
             }
-            JsonPatch patch = new JsonPatch(operationList);
-            UserService userService = getUserService();
+            patch = new JsonPatch(operationList);
+        }
 
+        @Test
+        @DisplayName("should successfully update String fields of User")
+        @Tag("/string-fields.json")
+        public void updateStringFields() throws JsonPatchException, JsonProcessingException {
+            //given
             User user = new User();
             user.setUsername("john doe");
             user.setEmail("john_doe@email.org");
-
+            // when
             User updatedUser = userService.updateUser(user, patch);
-
+            // then
             assertEquals("default", updatedUser.getUsername());
             assertEquals("default@email.org", updatedUser.getEmail());
+        }
+
+        @Test
+        @DisplayName("should successfully update Timestamp fields of User")
+        @Tag("/timestamp-field.json")
+        public void updateTimestamp() throws JsonPatchException, JsonProcessingException {
+            //given
+            User user = new User();
+            user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
+            // when
+            User updatedUser = userService.updateUser(user, patch);
+            // then
+            // TODO: figure out where does T come from and also 4hr difference
+            assertEquals("2003-06-21 10:17:37.854", updatedUser.getDeletionDate().toString());
+        }
+
+        @Test
+        @DisplayName("should successfully update ENUM fields of User")
+        @Tag("/enum-fields.json")
+        public void updateEnum() throws JsonPatchException, JsonProcessingException {
+            //given
+            User user = new User();
+            user.setStatus(UserStatus.ACTIVE);
+            user.setChatPermission(ChatPermission.EVERYONE);
+            // when
+            User updatedUser = userService.updateUser(user, patch);
+            // then
+            assertEquals(UserStatus.INACTIVE, updatedUser.getStatus());
+            assertEquals(ChatPermission.FRIENDS_ONLY, updatedUser.getChatPermission());
         }
 
     }
