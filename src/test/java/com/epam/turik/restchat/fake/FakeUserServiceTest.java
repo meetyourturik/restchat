@@ -322,7 +322,8 @@ public class FakeUserServiceTest {
 
         @BeforeEach
         private void init(TestInfo info) throws IOException {
-            userService = getUserService();
+            UserRepository repository = new FakeUserRepository();
+            userService = getUserService(repository);
 
             ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
             List<JsonPatchOperation> operationList = new ArrayList<>();
@@ -341,6 +342,8 @@ public class FakeUserServiceTest {
             user.setStatus(UserStatus.ACTIVE);
             user.setChatPermission(ChatPermission.EVERYONE);
             user.setIp("192.168.0.1");
+
+            user = userService.createUser(user);
         }
 
         @Test
@@ -349,7 +352,7 @@ public class FakeUserServiceTest {
         public void updateStringFields() throws JsonPatchException, JsonProcessingException {
             //given
             // when
-            User updatedUser = userService.updateUser(user, patch);
+            User updatedUser = userService.updateUser(user.getId(), patch);
             // then
             assertEquals("default", updatedUser.getUsername());
             assertEquals("default@email.org", updatedUser.getEmail());
@@ -362,9 +365,8 @@ public class FakeUserServiceTest {
         public void updateTimestamp() throws JsonPatchException, JsonProcessingException {
             //given
             // when
-            User updatedUser = userService.updateUser(user, patch);
+            User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            // TODO: figure out where does T come from and also 4hr difference
             assertEquals("2003-06-21 10:17:37.854", updatedUser.getDeletionDate().toString());
         }
 
@@ -374,7 +376,7 @@ public class FakeUserServiceTest {
         public void updateEnum() throws JsonPatchException, JsonProcessingException {
             //given
             // when
-            User updatedUser = userService.updateUser(user, patch);
+            User updatedUser = userService.updateUser(user.getId(), patch);
             // then
             assertEquals(UserStatus.INACTIVE, updatedUser.getStatus());
             assertEquals(ChatPermission.FRIENDS_ONLY, updatedUser.getChatPermission());
@@ -386,7 +388,7 @@ public class FakeUserServiceTest {
         public void updateIp() throws JsonPatchException, JsonProcessingException {
             //given
             // when
-            User updatedUser = userService.updateUser(user, patch);
+            User updatedUser = userService.updateUser(user.getId(), patch);
             // then
             assertEquals("10.20.3.15", updatedUser.getIp());
         }
@@ -397,7 +399,7 @@ public class FakeUserServiceTest {
         public void deleteFields() throws JsonPatchException, JsonProcessingException {
             //given
             // when
-            User updatedUser = userService.updateUser(user, patch);
+            User updatedUser = userService.updateUser(user.getId(), patch);
             // then
             assertNull(updatedUser.getEmail());
             assertNull(updatedUser.getUsername());
@@ -414,27 +416,8 @@ public class FakeUserServiceTest {
             //given
             // when
             // then
-            assertThrows(InvalidFormatException.class, () -> userService.updateUser(user, patch));
+            assertThrows(InvalidFormatException.class, () -> userService.updateUser(user.getId(), patch));
         }
-
-        @Test
-        @Tag("enum-fields-throw")
-        public void testTest() throws IOException, JsonPatchException {
-            ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
-            List<JsonPatchOperation> operationList = new ArrayList<>();
-            JsonNode operations = JsonLoader.fromString("[ { \"op\": \"replace\", \"path\": \"/deletionDate\", \"value\": \"2003-06-21 10:17:37.854\" } ]"); // should probably use fromString
-            for (JsonNode node : operations) {
-                JsonPatchOperation op = reader.readValue(node);
-                operationList.add(op);
-            }
-            patch = new JsonPatch(operationList);
-
-            User user1 = new User();
-            PatchService ps = new PatchService(new ObjectMapper());
-            user1 = ps.applyPatch(user1, patch);
-            System.out.println(user1.getDeletionDate());
-        }
-
     }
 
     @Nested

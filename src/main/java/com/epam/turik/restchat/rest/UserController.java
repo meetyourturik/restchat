@@ -71,8 +71,7 @@ public class UserController {
     @Transactional
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public UserDTO updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
-        User user = userService.getUserById(id);
-        User updatedUser = userService.updateUser(user, patch);
+        User updatedUser = userService.updateUser(id, patch);
         return userRestMapper.toDTO(updatedUser);
     }
 

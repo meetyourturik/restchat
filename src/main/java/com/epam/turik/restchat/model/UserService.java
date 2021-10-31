@@ -78,11 +78,12 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public User updateUser(User user, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+    public User updateUser(Long id, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+        User user = this.getUserById(id);
         User patched = patchService.applyPatch(user, patch);
-        UserEntity updatedEntity = userModelMapper.toEntity(patched);
-        updatedEntity = userRepository.save(updatedEntity);
-        return userModelMapper.fromEntity(updatedEntity);
+        UserEntity entity = userModelMapper.toEntity(patched);
+        entity = userRepository.save(entity);
+        return userModelMapper.fromEntity(entity);
     }
 
     public void deleteUser(long id) {
