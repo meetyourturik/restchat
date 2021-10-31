@@ -1,0 +1,5 @@
+[
+  { "op": "replace", "path": "/email", "value": "default@email.org" },
+  { "op": "replace", "path": "/username", "value": "default" },
+  { "op": "replace", "path": "/language", "value": "EN" }
+]

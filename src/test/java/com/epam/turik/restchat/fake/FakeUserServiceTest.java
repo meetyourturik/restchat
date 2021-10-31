@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.github.fge.jackson.JacksonUtils;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -317,6 +318,7 @@ public class FakeUserServiceTest {
     class UpdateUserTest {
         private UserService userService;
         private JsonPatch patch;
+        private User user;
 
         @BeforeEach
         private void init(TestInfo info) throws IOException {
@@ -324,36 +326,41 @@ public class FakeUserServiceTest {
 
             ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
             List<JsonPatchOperation> operationList = new ArrayList<>();
-            JsonNode operations = JsonLoader.fromResource((String) info.getTags().toArray()[0]); // should probably use fromString
+            JsonNode operations = JsonLoader.fromResource("/updateusertests/" + info.getTags().toArray()[0] + ".json"); // should probably use fromString
             for (JsonNode node : operations) {
                 JsonPatchOperation op = reader.readValue(node);
                 operationList.add(op);
             }
             patch = new JsonPatch(operationList);
+
+            user = new User();
+            user.setUsername("john doe");
+            user.setEmail("john_doe@email.org");
+            user.setLanguage("RU");
+            user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
+            user.setStatus(UserStatus.ACTIVE);
+            user.setChatPermission(ChatPermission.EVERYONE);
+            user.setIp("192.168.0.1");
         }
 
         @Test
         @DisplayName("should successfully update String fields of User")
-        @Tag("/string-fields.json")
+        @Tag("string-fields")
         public void updateStringFields() throws JsonPatchException, JsonProcessingException {
             //given
-            User user = new User();
-            user.setUsername("john doe");
-            user.setEmail("john_doe@email.org");
             // when
             User updatedUser = userService.updateUser(user, patch);
             // then
             assertEquals("default", updatedUser.getUsername());
             assertEquals("default@email.org", updatedUser.getEmail());
+            assertEquals("EN", updatedUser.getLanguage());
         }
 
         @Test
         @DisplayName("should successfully update Timestamp fields of User")
-        @Tag("/timestamp-field.json")
+        @Tag("timestamp-field")
         public void updateTimestamp() throws JsonPatchException, JsonProcessingException {
             //given
-            User user = new User();
-            user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
             // when
             User updatedUser = userService.updateUser(user, patch);
             // then
@@ -363,17 +370,69 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should successfully update ENUM fields of User")
-        @Tag("/enum-fields.json")
+        @Tag("enum-fields")
         public void updateEnum() throws JsonPatchException, JsonProcessingException {
             //given
-            User user = new User();
-            user.setStatus(UserStatus.ACTIVE);
-            user.setChatPermission(ChatPermission.EVERYONE);
             // when
             User updatedUser = userService.updateUser(user, patch);
             // then
             assertEquals(UserStatus.INACTIVE, updatedUser.getStatus());
             assertEquals(ChatPermission.FRIENDS_ONLY, updatedUser.getChatPermission());
+        }
+
+        @Test
+        @DisplayName("should successfully update IP fields of User")
+        @Tag("ip-field")
+        public void updateIp() throws JsonPatchException, JsonProcessingException {
+            //given
+            // when
+            User updatedUser = userService.updateUser(user, patch);
+            // then
+            assertEquals("10.20.3.15", updatedUser.getIp());
+        }
+
+        @Test
+        @DisplayName("should successfully clear fields of User")
+        @Tag("delete-fields")
+        public void deleteFields() throws JsonPatchException, JsonProcessingException {
+            //given
+            // when
+            User updatedUser = userService.updateUser(user, patch);
+            // then
+            assertNull(updatedUser.getEmail());
+            assertNull(updatedUser.getUsername());
+            assertNull(updatedUser.getIp());
+            assertNull(updatedUser.getStatus());
+            assertNull(updatedUser.getChatPermission());
+            assertNull(updatedUser.getDeletionDate());
+        }
+
+        @Test
+        @DisplayName("throws InvalidFormatException when ")
+        @Tag("enum-fields-throw")
+        public void throwsWhenIncorrectEnumValuePassed() {
+            //given
+            // when
+            // then
+            assertThrows(InvalidFormatException.class, () -> userService.updateUser(user, patch));
+        }
+
+        @Test
+        @Tag("enum-fields-throw")
+        public void testTest() throws IOException, JsonPatchException {
+            ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
+            List<JsonPatchOperation> operationList = new ArrayList<>();
+            JsonNode operations = JsonLoader.fromString("[ { \"op\": \"replace\", \"path\": \"/deletionDate\", \"value\": \"2003-06-21 10:17:37.854\" } ]"); // should probably use fromString
+            for (JsonNode node : operations) {
+                JsonPatchOperation op = reader.readValue(node);
+                operationList.add(op);
+            }
+            patch = new JsonPatch(operationList);
+
+            User user1 = new User();
+            PatchService ps = new PatchService(new ObjectMapper());
+            user1 = ps.applyPatch(user1, patch);
+            System.out.println(user1.getDeletionDate());
         }
 
     }

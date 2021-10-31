@@ -1,0 +1,8 @@
+[
+  { "op": "remove", "path": "/email" },
+  { "op": "remove", "path": "/username" },
+  { "op": "remove", "path": "/ip" },
+  { "op": "remove", "path": "/status" },
+  { "op": "remove", "path": "/chatPermission" },
+  { "op": "remove", "path": "/deletionDate" }
+]
