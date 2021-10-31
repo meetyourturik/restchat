@@ -19,7 +19,7 @@ public class User {
     private String email;
     private String timezone;
     private String language;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS", timezone="Europe/Moscow") // needed for serializing when patching, tz thing sucks
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss.SSS") // needed for serializing when patching
     private Timestamp deletionDate;
     private ChatPermission chatPermission;
     private String ip;
