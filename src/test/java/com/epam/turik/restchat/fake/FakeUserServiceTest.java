@@ -354,8 +354,8 @@ public class FakeUserServiceTest {
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            User updated = userService.getUserById(user.getId());
-            assertEquals(updated.getUsername(), updatedUser.getUsername());
+            User userFromDb = userService.getUserById(user.getId());
+            assertEquals(userFromDb.getUsername(), updatedUser.getUsername());
             assertEquals("default@email.org", updatedUser.getEmail());
             assertEquals("EN", updatedUser.getLanguage());
         }
@@ -368,7 +368,8 @@ public class FakeUserServiceTest {
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            assertEquals("2003-06-21 10:17:37.854", updatedUser.getDeletionDate().toString());
+            User userFromDb = userService.getUserById(user.getId());
+            assertEquals(userFromDb.getDeletionDate(), updatedUser.getDeletionDate());
         }
 
         @Test
@@ -379,8 +380,9 @@ public class FakeUserServiceTest {
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            assertEquals(UserStatus.INACTIVE, updatedUser.getStatus());
-            assertEquals(ChatPermission.FRIENDS_ONLY, updatedUser.getChatPermission());
+            User userFromDb = userService.getUserById(user.getId());
+            assertEquals(userFromDb.getStatus(), updatedUser.getStatus());
+            assertEquals(userFromDb.getChatPermission(), updatedUser.getChatPermission());
         }
 
         @Test
@@ -391,7 +393,8 @@ public class FakeUserServiceTest {
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            assertEquals("10.20.3.15", updatedUser.getIp());
+            User userFromDb = userService.getUserById(user.getId());
+            assertEquals(userFromDb.getIp(), updatedUser.getIp());
         }
 
         @Test
@@ -402,12 +405,13 @@ public class FakeUserServiceTest {
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            assertNull(updatedUser.getEmail());
-            assertNull(updatedUser.getUsername());
-            assertNull(updatedUser.getIp());
-            assertNull(updatedUser.getStatus());
-            assertNull(updatedUser.getChatPermission());
-            assertNull(updatedUser.getDeletionDate());
+            User userFromDb = userService.getUserById(user.getId());
+            assertNull(userFromDb.getEmail());
+            assertNull(userFromDb.getUsername());
+            assertNull(userFromDb.getIp());
+            assertNull(userFromDb.getStatus());
+            assertNull(userFromDb.getChatPermission());
+            assertNull(userFromDb.getDeletionDate());
         }
 
         @Test
