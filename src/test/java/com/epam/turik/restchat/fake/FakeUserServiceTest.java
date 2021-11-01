@@ -53,7 +53,7 @@ public class FakeUserServiceTest {
     class CreateUserTest {
         @Test
         @DisplayName("should create user")
-        public void creatingUser() {
+        void creatingUser() {
             UserService userService = getUserService();
             // given
             User user = new User();
@@ -61,8 +61,8 @@ public class FakeUserServiceTest {
             // when
             // then
             User result = userService.createUser(user);
-            assertEquals(result.getUsername(), user.getUsername());
-            assertEquals(result.getId(), 1L);
+            assertEquals(user.getUsername(), result.getUsername());
+            assertEquals(1L, result.getId());
         }
     }
 
@@ -71,7 +71,7 @@ public class FakeUserServiceTest {
     class GetUserByIdTest {
         @Test
         @DisplayName("should return user by id")
-        public void getUserByIdTest() {
+        void getUserByIdTest() {
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
             // given
@@ -81,13 +81,13 @@ public class FakeUserServiceTest {
             long id = repository.save(userEntity).getId();
             // then
             User result = userService.getUserById(id);
-            assertEquals(result.getUsername(), userEntity.getUsername());
+            assertEquals(userEntity.getUsername(), result.getUsername());
 
         }
 
         @Test
         @DisplayName("should throw UserNotFoundException when no user found")
-        public void throwWhenUserNotFoundTest() {
+        void throwWhenUserNotFoundTest() {
             UserService userService = getUserService();
             // given
             long nonexistentUserId = 3L;
@@ -102,18 +102,18 @@ public class FakeUserServiceTest {
     class GetAllUsersUsersTest {
         @Test
         @DisplayName("should return empty list when no users")
-        public void getZeroUsersTest() {
+        void getZeroUsersTest() {
             UserService userService = getUserService();
             // given
             // when
             // then
             List<User> users = userService.getAllUsers();
-            assertEquals(users.size(), 0);
+            assertTrue(users.isEmpty());
         }
 
         @Test
         @DisplayName("should return all users that were added")
-        public void getSomeUsers() {
+        void getSomeUsers() {
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
             // given
@@ -136,7 +136,7 @@ public class FakeUserServiceTest {
             for (User user : result) {
                 resultNames.add(user.getUsername());
             }
-            assertEquals(resultNames, userNames);
+            assertEquals(userNames, resultNames);
         }
     }
 
@@ -188,7 +188,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by username pattern")
-        public void getUsersByUsername() {
+        void getUsersByUsername() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -203,7 +203,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by language pattern")
-        public void getUsersByLanguage() {
+        void getUsersByLanguage() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -218,7 +218,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by status pattern")
-        public void getUsersByStatus() {
+        void getUsersByStatus() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -233,7 +233,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by chatPermission pattern")
-        public void getUsersByChatPermission() {
+        void getUsersByChatPermission() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -248,7 +248,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by username and language pattern")
-        public void getUsersByUsernameAndLanguage() {
+        void getUsersByUsernameAndLanguage() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -264,7 +264,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by username, language and status pattern")
-        public void getUsersByUsernameAndLanguageAndStatus() {
+        void getUsersByUsernameAndLanguageAndStatus() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -281,7 +281,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should find users by filter with all parameters")
-        public void getUsersByAllParams() {
+        void getUsersByAllParams() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -299,7 +299,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should return empty list when no users found")
-        public void getZeroUsers() {
+        void getZeroUsers() {
             // given
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
@@ -349,12 +349,13 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("should successfully update String fields of User")
         @Tag("string-fields")
-        public void updateStringFields() throws JsonPatchException, JsonProcessingException {
+        void updateStringFields() throws JsonPatchException, JsonProcessingException {
             //given
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
-            assertEquals("default", updatedUser.getUsername());
+            User updated = userService.getUserById(user.getId());
+            assertEquals(updated.getUsername(), updatedUser.getUsername());
             assertEquals("default@email.org", updatedUser.getEmail());
             assertEquals("EN", updatedUser.getLanguage());
         }
@@ -362,7 +363,7 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("should successfully update Timestamp fields of User")
         @Tag("timestamp-field")
-        public void updateTimestamp() throws JsonPatchException, JsonProcessingException {
+        void updateTimestamp() throws JsonPatchException, JsonProcessingException {
             //given
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
@@ -373,7 +374,7 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("should successfully update ENUM fields of User")
         @Tag("enum-fields")
-        public void updateEnum() throws JsonPatchException, JsonProcessingException {
+        void updateEnum() throws JsonPatchException, JsonProcessingException {
             //given
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
@@ -385,7 +386,7 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("should successfully update IP fields of User")
         @Tag("ip-field")
-        public void updateIp() throws JsonPatchException, JsonProcessingException {
+        void updateIp() throws JsonPatchException, JsonProcessingException {
             //given
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
@@ -396,7 +397,7 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("should successfully clear fields of User")
         @Tag("delete-fields")
-        public void deleteFields() throws JsonPatchException, JsonProcessingException {
+        void deleteFields() throws JsonPatchException, JsonProcessingException {
             //given
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
@@ -412,7 +413,7 @@ public class FakeUserServiceTest {
         @Test
         @DisplayName("throws InvalidFormatException when ")
         @Tag("enum-fields-throw")
-        public void throwsWhenIncorrectEnumValuePassed() {
+        void throwsWhenIncorrectEnumValuePassed() {
             //given
             // when
             // then
@@ -425,7 +426,7 @@ public class FakeUserServiceTest {
     class DeleteUserTest {
         @Test
         @DisplayName("should successfully delete existing user")
-        public void deleteExistingUser() {
+        void deleteExistingUser() {
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
             // given
@@ -444,7 +445,7 @@ public class FakeUserServiceTest {
 
         @Test
         @DisplayName("should do nothing when deleting nonexistent user")
-        public void deleteNonExistingUser() {
+        void deleteNonExistingUser() {
             UserRepository repository = new FakeUserRepository();
             UserService userService = getUserService(repository);
             // given
