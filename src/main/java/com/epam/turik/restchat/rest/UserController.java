@@ -4,11 +4,8 @@ import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.rest.exceptions.EntityNotFoundException;
-import com.epam.turik.restchat.rest.objects.ReportDTO;
-import com.epam.turik.restchat.rest.objects.UserDTO;
-import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.rest.objects.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,11 +67,13 @@ public class UserController {
 
     @Transactional
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
-    public UserDTO updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody List<OperationDTO> patch) {
+        log.warn("{}", patch);
         // jsonpatch -> updateDTO with optional fields
         // turn json patch into some business-level DTO
-        User updatedUser = userService.updateUser(id, patch);
-        return userRestMapper.toDTO(updatedUser);
+        //User updatedUser = userService.updateUser(id, patch);
+//        return userRestMapper.toDTO(updatedUser);
+        return null;
     }
 
     @DeleteMapping("/{id}")

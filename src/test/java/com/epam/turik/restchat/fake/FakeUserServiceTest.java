@@ -7,6 +7,7 @@ import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.User;
+import com.epam.turik.restchat.rest.objects.OperationDTO;
 import com.epam.turik.restchat.rest.objects.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
@@ -422,6 +423,14 @@ public class FakeUserServiceTest {
             // when
             // then
             assertThrows(InvalidFormatException.class, () -> userService.updateUser(user.getId(), patch));
+        }
+    }
+
+    @Nested
+    class idk {
+        @Test
+        void one() {
+
         }
     }
 
