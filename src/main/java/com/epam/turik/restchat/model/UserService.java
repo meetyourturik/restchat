@@ -4,10 +4,8 @@ import com.epam.turik.restchat.data.repository.UserRepository;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
+import com.epam.turik.restchat.model.objects.user.UserUpdate;
 import com.epam.turik.restchat.rest.objects.UserFilter;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -78,7 +76,7 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public User updateUser(Long id, JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+    public User updateUser(Long id, UserUpdate patch) {
         User user = this.getUserById(id);
         User patched = patchService.applyPatch(user, patch);
         UserEntity entity = userModelMapper.toEntity(patched);

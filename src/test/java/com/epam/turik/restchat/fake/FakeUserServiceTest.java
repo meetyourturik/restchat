@@ -7,20 +7,10 @@ import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.User;
-import com.epam.turik.restchat.rest.objects.OperationDTO;
+import com.epam.turik.restchat.model.objects.user.UserUpdate;
 import com.epam.turik.restchat.rest.objects.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.github.fge.jackson.JacksonUtils;
-import com.github.fge.jackson.JsonLoader;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.JsonPatchOperation;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,17 +21,16 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mapstruct.factory.Mappers;
 
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @DisplayName("UserService tests")
 @Execution(ExecutionMode.CONCURRENT)
 public class FakeUserServiceTest {
     private UserService getUserService(UserRepository repository) {
-        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ), new PatchService(new ObjectMapper()));
+        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ), new PatchService());
     }
 
     private UserService getUserService() {
@@ -317,120 +306,21 @@ public class FakeUserServiceTest {
     @Nested
     @DisplayName("updateUser tests")
     class UpdateUserTest {
-        private UserService userService;
-        private JsonPatch patch;
-        private User user;
-
-        @BeforeEach
-        private void init(TestInfo info) throws IOException {
-            UserRepository repository = new FakeUserRepository();
-            userService = getUserService(repository);
-
-            ObjectReader reader = JacksonUtils.getReader().forType(JsonPatchOperation.class);
-            List<JsonPatchOperation> operationList = new ArrayList<>();
-            JsonNode operations = JsonLoader.fromResource("/updateusertests/" + info.getTags().toArray()[0] + ".json"); // should probably use fromString
-            for (JsonNode node : operations) {
-                JsonPatchOperation op = reader.readValue(node);
-                operationList.add(op);
-            }
-            patch = new JsonPatch(operationList);
-
-            user = new User();
-            user.setUsername("john doe");
-            user.setEmail("john_doe@email.org");
-            user.setLanguage("RU");
-            user.setDeletionDate(new Timestamp(System.currentTimeMillis()));
-            user.setStatus(UserStatus.ACTIVE);
-            user.setChatPermission(ChatPermission.EVERYONE);
-            user.setIp("192.168.0.1");
-
-            user = userService.createUser(user);
-        }
-
         @Test
         @DisplayName("should successfully update String fields of User")
-        @Tag("string-fields")
-        void updateStringFields() throws JsonPatchException, JsonProcessingException {
+        void updateStringFields() {
             //given
+            UserService userService = getUserService();
+            User user = new User();
+            user.setUsername("before");
+            user = userService.createUser(user);
+            UserUpdate patch = new UserUpdate();
+            patch.setUsername(Optional.of("after"));
             // when
             User updatedUser = userService.updateUser(user.getId(), patch);
             // then
             User userFromDb = userService.getUserById(user.getId());
             assertEquals(userFromDb.getUsername(), updatedUser.getUsername());
-            assertEquals("default@email.org", updatedUser.getEmail());
-            assertEquals("EN", updatedUser.getLanguage());
-        }
-
-        @Test
-        @DisplayName("should successfully update Timestamp fields of User")
-        @Tag("timestamp-field")
-        void updateTimestamp() throws JsonPatchException, JsonProcessingException {
-            //given
-            // when
-            User updatedUser = userService.updateUser(user.getId(), patch);
-            // then
-            User userFromDb = userService.getUserById(user.getId());
-            assertEquals(userFromDb.getDeletionDate(), updatedUser.getDeletionDate());
-        }
-
-        @Test
-        @DisplayName("should successfully update ENUM fields of User")
-        @Tag("enum-fields")
-        void updateEnum() throws JsonPatchException, JsonProcessingException {
-            //given
-            // when
-            User updatedUser = userService.updateUser(user.getId(), patch);
-            // then
-            User userFromDb = userService.getUserById(user.getId());
-            assertEquals(userFromDb.getStatus(), updatedUser.getStatus());
-            assertEquals(userFromDb.getChatPermission(), updatedUser.getChatPermission());
-        }
-
-        @Test
-        @DisplayName("should successfully update IP fields of User")
-        @Tag("ip-field")
-        void updateIp() throws JsonPatchException, JsonProcessingException {
-            //given
-            // when
-            User updatedUser = userService.updateUser(user.getId(), patch);
-            // then
-            User userFromDb = userService.getUserById(user.getId());
-            assertEquals(userFromDb.getIp(), updatedUser.getIp());
-        }
-
-        @Test
-        @DisplayName("should successfully clear fields of User")
-        @Tag("delete-fields")
-        void deleteFields() throws JsonPatchException, JsonProcessingException {
-            //given
-            // when
-            User updatedUser = userService.updateUser(user.getId(), patch);
-            // then
-            User userFromDb = userService.getUserById(user.getId());
-            assertNull(userFromDb.getEmail());
-            assertNull(userFromDb.getUsername());
-            assertNull(userFromDb.getIp());
-            assertNull(userFromDb.getStatus());
-            assertNull(userFromDb.getChatPermission());
-            assertNull(userFromDb.getDeletionDate());
-        }
-
-        @Test
-        @DisplayName("throws InvalidFormatException when ")
-        @Tag("enum-fields-throw")
-        void throwsWhenIncorrectEnumValuePassed() {
-            //given
-            // when
-            // then
-            assertThrows(InvalidFormatException.class, () -> userService.updateUser(user.getId(), patch));
-        }
-    }
-
-    @Nested
-    class idk {
-        @Test
-        void one() {
-
         }
     }
 
