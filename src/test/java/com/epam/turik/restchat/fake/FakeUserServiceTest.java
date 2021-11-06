@@ -2,7 +2,7 @@ package com.epam.turik.restchat.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
-import com.epam.turik.restchat.model.PatchService;
+import com.epam.turik.restchat.model.UpdateService;
 import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
@@ -21,6 +21,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mapstruct.factory.Mappers;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ import java.util.Optional;
 @Execution(ExecutionMode.CONCURRENT)
 public class FakeUserServiceTest {
     private UserService getUserService(UserRepository repository) {
-        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ), new PatchService());
+        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ), new UpdateService());
     }
 
     private UserService getUserService() {
@@ -306,21 +307,83 @@ public class FakeUserServiceTest {
     @Nested
     @DisplayName("updateUser tests")
     class UpdateUserTest {
+        private UserService userService;
+        private Long userId;
+        private UserUpdate patch;
+
+        @BeforeEach
+        private void init() {
+            userService = getUserService();
+            User user = new User();
+            user.setUsername("before");
+            user.setStatus(UserStatus.ACTIVE);
+            user.setEmail("before@email.com");
+            user.setTimezone("EU");
+            user.setLanguage("russian");
+            user.setDeletionDate(Timestamp.valueOf("2012-12-21 13:17:49.012"));
+            user.setChatPermission(ChatPermission.EVERYONE);
+            user.setIp("10.0.0.1");
+            user = userService.createUser(user);
+            userId = user.getId();
+            patch = new UserUpdate();
+        }
+
         @Test
         @DisplayName("should successfully update String fields of User")
         void updateStringFields() {
             //given
-            UserService userService = getUserService();
-            User user = new User();
-            user.setUsername("before");
-            user = userService.createUser(user);
-            UserUpdate patch = new UserUpdate();
             patch.setUsername(Optional.of("after"));
+            patch.setEmail(Optional.of("after@email.com"));
+            patch.setTimezone(Optional.of("EN"));
+            patch.setLanguage(Optional.of("english"));
+            patch.setIp(Optional.of("192.168.0.1"));
             // when
-            User updatedUser = userService.updateUser(user.getId(), patch);
+            User updatedUser = userService.updateUser(userId, patch);
             // then
-            User userFromDb = userService.getUserById(user.getId());
+            User userFromDb = userService.getUserById(userId);
             assertEquals(userFromDb.getUsername(), updatedUser.getUsername());
+            assertEquals(userFromDb.getEmail(), updatedUser.getEmail());
+            assertEquals(userFromDb.getTimezone(), updatedUser.getTimezone());
+            assertEquals(userFromDb.getLanguage(), updatedUser.getLanguage());
+            assertEquals(userFromDb.getIp(), updatedUser.getIp());
+        }
+
+        @Test
+        @DisplayName("should successfully update Enum fields of User")
+        void updateEnumFields() {
+            //given
+            patch.setStatus(Optional.of(UserStatus.BANNED));
+            patch.setChatPermission(Optional.of(ChatPermission.FRIENDS_ONLY));
+            // when
+            User updatedUser = userService.updateUser(userId, patch);
+            // then
+            User userFromDb = userService.getUserById(userId);
+            assertEquals(userFromDb.getStatus(), updatedUser.getStatus());
+            assertEquals(userFromDb.getChatPermission(), updatedUser.getChatPermission());
+        }
+
+        @Test
+        @DisplayName("should successfully update Timestamp fields of User")
+        void updateTimestampFields() {
+            //given
+            patch.setDeletionDate(Optional.of(Timestamp.valueOf("2022-01-14 21:00:00.000")));
+            // when
+            User updatedUser = userService.updateUser(userId, patch);
+            // then
+            User userFromDb = userService.getUserById(userId);
+            assertEquals(userFromDb.getDeletionDate(), updatedUser.getDeletionDate());
+        }
+
+        @Test
+        @DisplayName("should successfully remove field")
+        void removeField() {
+            //given
+            patch.setStatus(Optional.empty());
+            //when
+            User updatedUser = userService.updateUser(userId, patch);
+            // then
+            User userFromDb = userService.getUserById(userId);
+            assertNull(userFromDb.getStatus());
         }
     }
 

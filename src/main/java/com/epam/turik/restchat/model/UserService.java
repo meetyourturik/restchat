@@ -19,13 +19,13 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserModelMapper userModelMapper;
-    private final PatchService patchService;
+    private final UpdateService updateService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserModelMapper userModelMapper, PatchService patchService) {
+    public UserService(UserRepository userRepository, UserModelMapper userModelMapper, UpdateService updateService) {
         this.userRepository = userRepository;
         this.userModelMapper = userModelMapper;
-        this.patchService = patchService;
+        this.updateService = updateService;
     }
 
     public User createUser(User user) {
@@ -76,10 +76,10 @@ public class UserService {
         return userModelMapper.fromEntityList(userEntities);
     }
 
-    public User updateUser(Long id, UserUpdate patch) {
+    public User updateUser(Long id, UserUpdate update) {
         User user = this.getUserById(id);
-        User patched = patchService.applyPatch(user, patch);
-        UserEntity entity = userModelMapper.toEntity(patched);
+        updateService.applyUpdate(user, update);
+        UserEntity entity = userModelMapper.toEntity(user);
         entity = userRepository.save(entity);
         return userModelMapper.fromEntity(entity);
     }

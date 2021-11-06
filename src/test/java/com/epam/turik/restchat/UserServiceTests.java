@@ -2,7 +2,7 @@ package com.epam.turik.restchat;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
-import com.epam.turik.restchat.model.PatchService;
+import com.epam.turik.restchat.model.UpdateService;
 import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.objects.user.User;
@@ -29,7 +29,7 @@ class UserServiceTests {
     @Mock
     UserModelMapper userModelMapper;
     @Mock
-    PatchService patchService;
+    UpdateService updateService;
     @InjectMocks
     UserService userService;
 
