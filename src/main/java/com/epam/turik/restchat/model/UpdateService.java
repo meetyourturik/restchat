@@ -14,6 +14,7 @@ public class UpdateService {
      * @param patch - null field means ignore, empty means remove, present means update
      */
 
+    // можно попробовать переложить в маппер
     public void applyUpdate(User user, UserUpdate patch) {
         if (patch.getUsername() != null) {
             user.setUsername(patch.getUsername().isPresent() ? patch.getUsername().get() : null);

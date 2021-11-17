@@ -80,8 +80,8 @@ public class UserService {
         User user = this.getUserById(id);
         updateService.applyUpdate(user, update);
         UserEntity entity = userModelMapper.toEntity(user);
-        entity = userRepository.save(entity);
-        return userModelMapper.fromEntity(entity);
+        userRepository.save(entity);
+        return user;
     }
 
     public void deleteUser(long id) {
