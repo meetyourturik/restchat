@@ -2,7 +2,6 @@ package com.epam.turik.restchat.mock;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
-import com.epam.turik.restchat.model.UpdateService;
 import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.objects.user.User;
@@ -37,8 +36,6 @@ class MockUserServiceTests {
     UserRepository userRepository;
     @Mock
     UserModelMapper userModelMapper;
-    @Mock
-    UpdateService updateService;
     @InjectMocks
     UserService userService;
 
@@ -151,8 +148,8 @@ class MockUserServiceTests {
         when(userModelMapper.toEntity(any(User.class))).thenReturn(new UserEntity());
         // then
         User result = userService.updateUser(id, patch);
-        verify(updateService, times(1)).applyUpdate(any(User.class), any(UserUpdate.class));
         verify(userModelMapper, times(1)).toEntity(any(User.class));
+        verify(userModelMapper, times(1)).updateUser(any(UserUpdate.class) ,any(User.class));
         verify(userRepository, times(1)).findUserById(anyLong());
         verify(userRepository, times(1)).save(any(UserEntity.class));
         verify(userModelMapper, times(1)).fromEntity(any(UserEntity.class));

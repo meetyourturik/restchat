@@ -19,13 +19,11 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserModelMapper userModelMapper;
-    private final UpdateService updateService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserModelMapper userModelMapper, UpdateService updateService) {
+    public UserService(UserRepository userRepository, UserModelMapper userModelMapper) {
         this.userRepository = userRepository;
         this.userModelMapper = userModelMapper;
-        this.updateService = updateService;
     }
 
     public User createUser(User user) {
@@ -78,7 +76,7 @@ public class UserService {
 
     public User updateUser(Long id, UserUpdate update) {
         User user = this.getUserById(id);
-        updateService.applyUpdate(user, update);
+        userModelMapper.updateUser(update, user);
         UserEntity entity = userModelMapper.toEntity(user);
         userRepository.save(entity);
         return user;

@@ -2,7 +2,6 @@ package com.epam.turik.restchat.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
-import com.epam.turik.restchat.model.UpdateService;
 import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
@@ -31,7 +30,7 @@ import java.util.Optional;
 @Execution(ExecutionMode.CONCURRENT)
 public class FakeUserServiceTest {
     private UserService getUserService(UserRepository repository) {
-        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ), new UpdateService());
+        return new UserService(repository, Mappers.getMapper( UserModelMapper.class ));
     }
 
     private UserService getUserService() {
@@ -383,6 +382,7 @@ public class FakeUserServiceTest {
             User updatedUser = userService.updateUser(userId, patch);
             // then
             User userFromDb = userService.getUserById(userId);
+            assertNotNull(userFromDb.getUsername());
             assertNull(userFromDb.getStatus());
         }
     }
