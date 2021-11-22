@@ -20,9 +20,6 @@ public interface UserModelMapper {
 
     List<User> fromEntityList(List<UserEntity> userEntity);
 
-    // https://stackoverflow.com/questions/58313368/use-java-8-optional-with-mapstruct
-    // https://stackoverflow.com/questions/49067870/how-can-i-map-properties-conditionally-with-mapstruct-1-2/
-
     @Mapping(target = "id", ignore = true)
     void updateUser(UserUpdate update, @MappingTarget User user);
 
