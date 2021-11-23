@@ -45,7 +45,7 @@ public class UserService {
 
     // кривошеев против!
     @Deprecated
-    public List<User> getUsersByFilter(UserFilter userFilter) {
+    public List<User> getUsersByFilter(UserFilter userFilter) { // move to mapper
         UserEntity exampleEntity = new UserEntity();
 
         ExampleMatcher matcher = ExampleMatcher.matchingAll();
@@ -70,7 +70,7 @@ public class UserService {
             matcher = matcher.withMatcher("chatPermission", ExampleMatcher.GenericPropertyMatchers.exact());
         }
 
-        List<UserEntity> userEntities = userRepository.findAll(Example.of(exampleEntity, matcher));
+        List<UserEntity> userEntities = userRepository.findByExample(Example.of(exampleEntity, matcher));
         return userModelMapper.fromEntityList(userEntities);
     }
 

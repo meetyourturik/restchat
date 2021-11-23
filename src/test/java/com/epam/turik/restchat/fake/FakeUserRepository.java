@@ -18,7 +18,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public List<UserEntity> findAll(Example<UserEntity> userEntityExample) {
+    public List<UserEntity> findByExample(Example<UserEntity> userEntityExample) {
         UserEntity probe = userEntityExample.getProbe();
         List<UserEntity> result = new ArrayList<>();
 
