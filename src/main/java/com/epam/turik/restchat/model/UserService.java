@@ -46,31 +46,8 @@ public class UserService {
     // кривошеев против!
     @Deprecated
     public List<User> getUsersByFilter(UserFilter userFilter) { // move to mapper
-        UserEntity exampleEntity = new UserEntity();
-
-        ExampleMatcher matcher = ExampleMatcher.matchingAll();
-
-        if (userFilter.getUsername() != null) {
-            exampleEntity.setUsername(userFilter.getUsername());
-            matcher = matcher.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
-        }
-
-        if (userFilter.getLanguage() != null) {
-            exampleEntity.setLanguage(userFilter.getLanguage());
-            matcher = matcher.withMatcher("language", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
-        }
-
-        if (userFilter.getStatus() != null) {
-            exampleEntity.setStatus(userFilter.getStatus());
-            matcher = matcher.withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact());
-        }
-
-        if (userFilter.getChatPermission() != null) {
-            exampleEntity.setChatPermission(userFilter.getChatPermission());
-            matcher = matcher.withMatcher("chatPermission", ExampleMatcher.GenericPropertyMatchers.exact());
-        }
-
-        List<UserEntity> userEntities = userRepository.findByExample(Example.of(exampleEntity, matcher));
+        Example<UserEntity> example = userModelMapper.filterToExample(userFilter);
+        List<UserEntity> userEntities = userRepository.findByExample(example);
         return userModelMapper.fromEntityList(userEntities);
     }
 

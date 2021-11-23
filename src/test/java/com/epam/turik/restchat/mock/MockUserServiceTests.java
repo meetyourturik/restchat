@@ -125,12 +125,14 @@ class MockUserServiceTests {
         user.setUsername("turik");
         users.add(user);
         //when
+        when(userModelMapper.filterToExample(any(UserFilter.class))).thenReturn(Example.of(new UserEntity()));
         when(userModelMapper.fromEntityList(anyList())).thenReturn(users);
 
         // then
         List<User> result = userService.getUsersByFilter(filter);
         assertEquals(result, users);
 
+        verify(userModelMapper, times(1)).filterToExample(any(UserFilter.class));
         verify(userRepository, times(1)).findByExample(any(Example.class));
         verify(userModelMapper, times(1)).fromEntityList(anyList());
     }
