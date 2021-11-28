@@ -13,8 +13,6 @@ import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assumptions.*;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
