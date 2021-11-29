@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.fake;
+package com.epam.turik.restchat.model.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;

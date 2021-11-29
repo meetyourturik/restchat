@@ -1,9 +1,11 @@
 package com.epam.turik.restchat.rest;
 
 import com.epam.turik.restchat.model.objects.user.User;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
 import com.epam.turik.restchat.rest.objects.OperationDTO;
 import com.epam.turik.restchat.rest.objects.UserDTO;
+import com.epam.turik.restchat.rest.objects.UserFilterDTO;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
 import org.mapstruct.Mapper;
@@ -17,6 +19,8 @@ public interface UserRestMapper {
     UserDTO toDTO(User user);
 
     User fromDTO(UserDTO userDTO);
+
+    UserFilter fromDTO(UserFilterDTO userFilterDTO);
 
     List<UserDTO> toDTOList(List<User> user);
 

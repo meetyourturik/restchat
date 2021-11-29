@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.mock;
+package com.epam.turik.restchat.model.mock;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
@@ -6,7 +6,7 @@ import com.epam.turik.restchat.model.UserModelMapper;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
-import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;

@@ -3,7 +3,7 @@ package com.epam.turik.restchat.model;
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
-import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import com.vladmihalcea.hibernate.type.basic.Inet;
 import org.mapstruct.*;
 import org.springframework.data.domain.Example;

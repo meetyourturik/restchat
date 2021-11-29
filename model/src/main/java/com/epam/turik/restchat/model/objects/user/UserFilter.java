@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.rest.objects;
+package com.epam.turik.restchat.model.objects.user;
 
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;

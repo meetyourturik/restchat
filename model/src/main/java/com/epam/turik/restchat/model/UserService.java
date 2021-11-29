@@ -5,7 +5,7 @@ import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
-import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

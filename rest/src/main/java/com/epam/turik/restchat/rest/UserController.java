@@ -3,6 +3,7 @@ package com.epam.turik.restchat.rest;
 import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.User;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
 import com.epam.turik.restchat.rest.exceptions.EntityNotFoundException;
 import com.epam.turik.restchat.rest.objects.*;
@@ -46,9 +47,10 @@ public class UserController {
     }
 
     @GetMapping("")
-    public List<UserDTO> getAll(UserFilter userFilter) {
+    public List<UserDTO> getAll(UserFilterDTO userFilterDTO) {
         List<User> users;
-        if (userFilter.isEmpty()) {
+        UserFilter userFilter = userRestMapper.fromDTO(userFilterDTO);
+        if (userFilter.isEmpty()) { // TODO: probably should check DTO here
             users = userService.getAllUsers();
         } else {
             users = userService.getUsersByFilter(userFilter);

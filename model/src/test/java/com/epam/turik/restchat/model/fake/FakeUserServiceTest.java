@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.fake;
+package com.epam.turik.restchat.model.fake;
 
 import com.epam.turik.restchat.data.objects.user.UserEntity;
 import com.epam.turik.restchat.data.repository.UserRepository;
@@ -7,11 +7,12 @@ import com.epam.turik.restchat.model.UserService;
 import com.epam.turik.restchat.model.exceptions.UserNotFoundException;
 import com.epam.turik.restchat.model.objects.user.User;
 import com.epam.turik.restchat.model.objects.user.UserUpdate;
-import com.epam.turik.restchat.rest.objects.UserFilter;
+import com.epam.turik.restchat.model.objects.user.UserFilter;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;

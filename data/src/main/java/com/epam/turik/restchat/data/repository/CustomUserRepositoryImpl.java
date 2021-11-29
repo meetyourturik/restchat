@@ -1,6 +1,6 @@
 package com.epam.turik.restchat.data.repository;
 
-import com.epam.turik.restchat.data.user.UserEntity;
+import com.epam.turik.restchat.data.objects.user.UserEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
