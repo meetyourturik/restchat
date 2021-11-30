@@ -5,9 +5,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 @TestConfiguration
-@ComponentScan(
-    basePackages = {"com.epam.turik.restchat"}
-)
+@ComponentScan(basePackages = {"com.epam.turik"})
 @EnableAutoConfiguration
 public class TestConfig {
 

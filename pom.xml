@@ -9,7 +9,8 @@
 		<module>rest</module>
 		<module>data</module>
 		<module>model</module>
-	</modules>
+        <module>integration-tests</module>
+    </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
