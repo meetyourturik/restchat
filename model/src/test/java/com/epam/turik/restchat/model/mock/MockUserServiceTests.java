@@ -133,7 +133,7 @@ class MockUserServiceTests {
         assertEquals(result, users);
 
         verify(userModelMapper, times(1)).filterToExample(any(UserFilter.class));
-        verify(userRepository, times(1)).findByExample(any(Example.class));
+        verify(userRepository, times(1)).findAll(any(Example.class));
         verify(userModelMapper, times(1)).fromEntityList(anyList());
     }
 

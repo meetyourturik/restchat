@@ -1,7 +1,6 @@
 spring:
   application:
     name: restchat
-
   datasource:
     url: jdbc:postgresql://localhost:5432/restchat_db0
     username: developer

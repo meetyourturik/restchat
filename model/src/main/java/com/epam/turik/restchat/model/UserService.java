@@ -46,7 +46,7 @@ public class UserService {
     @Deprecated
     public List<User> getUsersByFilter(UserFilter userFilter) {
         Example<UserEntity> example = userModelMapper.filterToExample(userFilter);
-        List<UserEntity> userEntities = userRepository.findByExample(example);
+        List<UserEntity> userEntities = userRepository.findAll(example);
         return userModelMapper.fromEntityList(userEntities);
     }
 

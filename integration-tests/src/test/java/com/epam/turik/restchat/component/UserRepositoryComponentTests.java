@@ -96,7 +96,7 @@ class UserRepositoryComponentTests {
         exampleEntity.setStatus(UserStatus.ACTIVE);
         matcher = matcher.withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact());
 
-        List<UserEntity> users = userRepository.findByExample(Example.of(exampleEntity, matcher));
+        List<UserEntity> users = userRepository.findAll(Example.of(exampleEntity, matcher));
         assertEquals(2, users.size());
     }
 
@@ -109,7 +109,7 @@ class UserRepositoryComponentTests {
         exampleEntity.setLanguage("DE");
         matcher = matcher.withMatcher("language", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
 
-        List<UserEntity> users = userRepository.findByExample(Example.of(exampleEntity, matcher));
+        List<UserEntity> users = userRepository.findAll(Example.of(exampleEntity, matcher));
         assertEquals(0, users.size());
     }
 }
