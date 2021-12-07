@@ -33,5 +33,9 @@
             <artifactId>types</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
     </dependencies>
 </project>

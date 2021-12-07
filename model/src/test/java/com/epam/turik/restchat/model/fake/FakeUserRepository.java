@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.*;
 
+@SuppressWarnings("NullableProblems")
 public class FakeUserRepository implements UserRepository {
     private final Map<Long, UserEntity> users = new HashMap<>();
     private long counter = 1L;

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ReportDTO {
-    private Long reporter_id;
-    private Long reported_id;
+    private Long reporterId;
+    private Long reportedId;
     private String reason;
 }

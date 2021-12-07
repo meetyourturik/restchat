@@ -2,6 +2,7 @@ package com.epam.turik.restchat.rest.exceptions;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ShouldHaveBeenThrownEarlierException extends ProblemException {
@@ -33,6 +34,6 @@ public class ShouldHaveBeenThrownEarlierException extends ProblemException {
 
     @Override
     public List<Violation> getViolations() {
-        return null;
+        return Collections.emptyList();
     }
 }

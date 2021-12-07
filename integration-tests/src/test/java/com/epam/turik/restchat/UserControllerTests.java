@@ -104,6 +104,6 @@ class UserControllerTests {
 		ResultActions resultActions = mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk());
 		MvcResult result = resultActions.andReturn();
 		List<UserDTO> users = (List<UserDTO>) mapper.readValue(result.getResponse().getContentAsString(), List.class);
-		assertThat(users.size()).isEqualTo(0);
+		assertThat(users).isEmpty();
 	}
 }

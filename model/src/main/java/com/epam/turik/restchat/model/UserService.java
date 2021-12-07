@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        List<UserEntity> userEntities = (List<UserEntity>) userRepository.findAll();
+        List<UserEntity> userEntities = userRepository.findAll();
         return userModelMapper.fromEntityList(userEntities);
     }
 
