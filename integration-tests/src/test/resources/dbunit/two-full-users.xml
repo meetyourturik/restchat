@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset reset_sequences="user_id">
+    <user id='1' username='john doe' user_status='ACTIVE' email='john@doe.org' timezone='DE/DE'
+          language='DE' deletion_date='2012-12-21 13:17:49.012' chat_permission='FRIENDS_ONLY' ip='192.168.0.1'/>
+    <user id='2' username='user2' user_status='ACTIVE' email='user2@doe.org' timezone='CET'
+          language='EN' deletion_date='2014-07-13 22:36:12.711' chat_permission='EVERYONE' ip='192.168.0.2'/>
+</dataset>

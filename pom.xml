@@ -31,16 +31,10 @@
 		<postgres.version>42.2.18</postgres.version>
 		<hibernate-types.version>2.10.4</hibernate-types.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<springtest-dbunit.version>1.2.0</springtest-dbunit.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${testcontainers.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 			<dependency>
 				<groupId>com.vladmihalcea</groupId>
 				<artifactId>hibernate-types-52</artifactId>
@@ -56,6 +50,11 @@
 				<artifactId>postgresql</artifactId>
 				<version>${postgres.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.springtestdbunit</groupId>
+				<artifactId>spring-test-dbunit</artifactId>
+				<version>${springtest-dbunit.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -65,4 +64,15 @@
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

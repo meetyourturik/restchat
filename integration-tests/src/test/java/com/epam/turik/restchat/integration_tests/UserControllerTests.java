@@ -1,6 +1,6 @@
-package com.epam.turik.restchat;
+package com.epam.turik.restchat.integration_tests;
 
-import com.epam.turik.restchat.infrastructure.ComponentTest;
+import com.epam.turik.restchat.integration_tests.infrastructure.ComponentTest;
 import com.epam.turik.restchat.rest.UserController;
 import com.epam.turik.restchat.rest.UserRestMapper;
 import com.epam.turik.restchat.rest.objects.UserDTO;
