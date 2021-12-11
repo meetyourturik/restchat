@@ -8,5 +8,4 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "com.epam.turik.restchat")
 @EnableAutoConfiguration
 public class TestConfig {
-
 }

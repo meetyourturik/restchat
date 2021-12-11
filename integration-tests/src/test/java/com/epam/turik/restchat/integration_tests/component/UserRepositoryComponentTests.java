@@ -6,15 +6,11 @@ import com.epam.turik.restchat.integration_tests.infrastructure.ComponentTest;
 import com.epam.turik.restchat.types.user.ChatPermission;
 import com.epam.turik.restchat.types.user.UserStatus;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.bean.DatabaseConfigBean;
-import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import com.vladmihalcea.hibernate.type.basic.Inet;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -30,23 +26,9 @@ class UserRepositoryComponentTests {
     @Autowired
     UserRepository userRepository;
 
-    @Bean
-    public DatabaseConfigBean getConfigBean() {
-        DatabaseConfigBean bean = new DatabaseConfigBean();
-        bean.setEscapePattern("\"");
-        return bean;
-    }
-
-    @Bean(name = "connectionBean")
-    public DatabaseDataSourceConnectionFactoryBean getConnectionBean(DatabaseConfigBean config) {
-        DatabaseDataSourceConnectionFactoryBean connectionFactoryBean = new DatabaseDataSourceConnectionFactoryBean();
-        connectionFactoryBean.setDatabaseConfig(config);
-        return connectionFactoryBean;
-    }
-
     @Test
     @DisplayName("should return user by id")
-    @DatabaseSetup(connection = "connectionBean", value = "/dbunit/two-full-users.xml")
+    @DatabaseSetup(value = "/dbunit/two-full-users.xml", connection = "dbUnitDatabaseConnection")
     void getUserByIdTest() {
         UserEntity user1 = new UserEntity();
         user1.setId(1L);
