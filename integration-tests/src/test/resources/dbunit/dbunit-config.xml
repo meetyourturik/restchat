@@ -8,7 +8,7 @@
 
     <context:component-scan base-package="com.epam.turik.restchat.integration_tests" />
 
-    <bean id="dataTypeFactory" class="org.dbunit.ext.postgresql.PostgresqlDataTypeFactory" />
+<!--    <bean id="dataTypeFactory" class="org.dbunit.ext.postgresql.PostgresqlDataTypeFactory"/>-->
 
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
