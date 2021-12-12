@@ -3,24 +3,22 @@ services:
   app:
     image: app:0.0.1-SNAPSHOT
     container_name: restchat-app
-    build:
-      context: .
     depends_on:
       - postgres
+    command: ["./wait-for-postgres.sh", "postgres", "python", "app.py"]
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/restchat_db0
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/restchat_db
       - SPRING_DATASOURCE_USERNAME=username
       - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - 8080:8080
 
   postgres:
     image: postgres:12
     container_name: postgres
-    hostname: postgres
     ports:
-      - 54322:5432
+      - 5438:5432
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: restchat_db
