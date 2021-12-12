@@ -1,5 +1,6 @@
-package com.epam.turik.restchat.infrastructure;
+package com.epam.turik.restchat.integration_tests.infrastructure;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,11 +21,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = MOCK)
-@ContextConfiguration(initializers = {TestInitializer.Initializer.class})
+@ContextConfiguration(initializers = {TestInitializer.Initializer.class}, classes = {DBunitConfig.class})
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class
 })
 @ExtendWith(SpringExtension.class)
 @Testcontainers

@@ -1,4 +1,4 @@
-package com.epam.turik.restchat.infrastructure;
+package com.epam.turik.restchat.integration_tests.infrastructure;
 
 import org.junit.ClassRule;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -22,7 +22,6 @@ public class TestInitializer {
 
     private static void init(ConfigurableApplicationContext context) {
         postgres.start();
-
         TestPropertyValues.of(
             "spring.datasource.url=" + postgres.getJdbcUrl(),
             "spring.datasource.username=" + postgres.getUsername(),
