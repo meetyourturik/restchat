@@ -5,28 +5,3 @@
     <user id='2' username='user2' user_status='ACTIVE' email='user2@doe.org' timezone='CET'
           language='EN' deletion_date='2014-07-13 22:36:12.711' chat_permission='EVERYONE' ip='192.168.0.2'/>
 </dataset>
-
-<!--<dataset>-->
-<!--    <table name="user">-->
-<!--        <column>id</column>-->
-<!--        <column>username</column>-->
-<!--        <column>user_status</column>-->
-<!--        <column>email</column>-->
-<!--        <column>timezone</column>-->
-<!--        <column>language</column>-->
-<!--        <column>deletion_date</column>-->
-<!--        <column>chat_permission</column>-->
-<!--        <column>ip</column>-->
-<!--        <row>-->
-<!--            <value>1</value>-->
-<!--            <value>john</value>-->
-<!--            <value>ACTIVE</value>-->
-<!--            <value>john@doe.org</value>-->
-<!--            <value>DE/DE</value>-->
-<!--            <value>DE</value>-->
-<!--            <value>2012-12-21 13:17:49.012</value>-->
-<!--            <value>FRIENDS_ONLY</value>-->
-<!--            <value>192.168.0.1</value>-->
-<!--        </row>-->
-<!--    </table>-->
-<!--</dataset>-->

@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 
 @SpringBootTest(classes = TestConfig.class, webEnvironment = MOCK)
-@ContextConfiguration(initializers = {TestInitializer.Initializer.class}, classes = {DBunitConfig.class}, locations = {"classpath:/dbunit/dbunit-config.xml"})
+@ContextConfiguration(initializers = {TestInitializer.Initializer.class}, classes = {DBunitConfig.class})
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,

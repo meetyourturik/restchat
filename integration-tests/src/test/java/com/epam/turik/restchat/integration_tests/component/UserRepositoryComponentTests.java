@@ -22,28 +22,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @ComponentTest
+@DatabaseSetup(value = "/dbunit/two-full-users.xml", connection = "dbUnitDatabaseConnection")
 class UserRepositoryComponentTests {
     @Autowired
     UserRepository userRepository;
 
     @Test
     @DisplayName("should return user by id")
-    @DatabaseSetup(value = "/dbunit/two-full-users.xml", connection = "dbUnitDatabaseConnection")
     void getUserByIdTest() {
         UserEntity user1 = new UserEntity();
         user1.setId(1L);
-        user1.setUsername("user1");
+        user1.setUsername("john doe");
         user1.setStatus(UserStatus.ACTIVE);
-        user1.setEmail("user1@email.com");
-        user1.setTimezone("GMT");
-        user1.setLanguage("RU");
+        user1.setEmail("john@doe.org");
+        user1.setTimezone("DE/DE");
+        user1.setLanguage("DE");
         user1.setDeletionDate(Timestamp.valueOf("2012-12-21 13:17:49.012"));
         user1.setChatPermission(ChatPermission.FRIENDS_ONLY);
         user1.setIp(new Inet("192.168.0.1"));
 
-        // since id
         Optional<UserEntity> user = userRepository.findUserById(1L);
-        log.warn("{}", userRepository.findAll().size());
         assertTrue(user.isPresent());
         assertEquals(user1, user.get());
     }
@@ -75,7 +73,7 @@ class UserRepositoryComponentTests {
         UserEntity exampleEntity = new UserEntity();
         ExampleMatcher matcher = ExampleMatcher.matchingAll();
 
-        exampleEntity.setLanguage("DE");
+        exampleEntity.setLanguage("RU");
         matcher = matcher.withMatcher("language", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase());
 
         List<UserEntity> users = userRepository.findAll(Example.of(exampleEntity, matcher));

@@ -25,10 +25,7 @@ public class TestInitializer {
         TestPropertyValues.of(
             "spring.datasource.url=" + postgres.getJdbcUrl(),
             "spring.datasource.username=" + postgres.getUsername(),
-            "spring.datasource.password=" + postgres.getPassword()//,
-//            "dbunit.connectionUrl=" + postgres.getJdbcUrl(),
-//            "dbunit.username=" + postgres.getUsername(),
-//            "dbunit.password=" + postgres.getPassword()
+            "spring.datasource.password=" + postgres.getPassword()
         ).applyTo(context.getEnvironment());
     }
 }
