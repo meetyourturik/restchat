@@ -5,7 +5,6 @@ services:
     container_name: restchat
     depends_on:
       - postgres
-    command: ["./wait-for-postgres.sh", "postgres", "python", "app.py"]
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/restchat_db
       - SPRING_DATASOURCE_USERNAME=username
