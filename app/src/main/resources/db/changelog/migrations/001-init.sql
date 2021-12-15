@@ -9,7 +9,7 @@ create type user_status AS ENUM ('ACTIVE', 'INACTIVE', 'BANNED');
 create type chat_permission AS ENUM ('EVERYONE', 'FRIENDS_ONLY');
 create type report_reason AS ENUM ('SPAM', 'ABUSE', 'VIOLENCE', 'OTHER');
 
-create table "user" (
+create table if not exists "user" (
     id bigint NOT NULL DEFAULT nextval('user_id'),
     username character varying(25) NOT NULL,
     email character varying(250) NOT NULL,
@@ -22,7 +22,7 @@ create table "user" (
     PRIMARY KEY (id)
 );
 
-create table message (
+create table if not exists message (
     id bigint NOT NULL DEFAULT nextval('message_id'),
     sender_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
@@ -41,7 +41,7 @@ create table message (
         NOT VALID
 );
 
-create table friendship_request (
+create table if not exists friendship_request (
     id bigint NOT NULL DEFAULT nextval('friendship_request_id'),
     sender_id bigint NOT NULL,
     receiver_id bigint NOT NULL,
@@ -61,7 +61,7 @@ create table friendship_request (
         NOT VALID
 );
 
-create table friendship (
+create table if not exists friendship (
     user1_id bigint NOT NULL,
     user2_id bigint NOT NULL,
     CONSTRAINT user1_id FOREIGN KEY (user1_id)
@@ -76,12 +76,12 @@ create table friendship (
         NOT VALID
 );
 
-create table banned_ip (
+create table if not exists banned_ip (
 	ip inet NOT NULL,
 	PRIMARY KEY (ip)
 );
 
-create table user_report (
+create table if not exists user_report (
 	reporter_id bigint NOT NULL,
 	reported_id bigint NOT NULL,
     report_reason report_reason NOT NULL,
@@ -98,7 +98,7 @@ create table user_report (
 	PRIMARY KEY (reporter_id, reported_id)
 );
 
-create table deleted_message (
+create table if not exists deleted_message (
     id bigint NOT NULL,
     sender_id bigint NOT NULL,
     receiver_id bigint NOT NULL,

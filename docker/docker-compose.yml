@@ -1,21 +1,23 @@
-version: '3.7'
+version: '3'
 services:
+  app:
+    image: restchat:latest
+    container_name: restchat
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/restchat_db
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - "8080:8080"
 
   postgres:
     image: postgres:12
     container_name: postgres
-    hostname: postgres
     ports:
-      - 5432:5432
+      - "5438:5432"
     environment:
-      POSTGRES_USER: developer
+      POSTGRES_USER: username
       POSTGRES_PASSWORD: password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - postgres_conf:/etc/postgresql
-      - postgres_log:/var/log/postgresql
-
-volumes:
-  postgres_data:
-  postgres_conf:
-  postgres_log:
+      POSTGRES_DB: restchat_db
