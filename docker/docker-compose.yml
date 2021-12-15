@@ -10,13 +10,13 @@ services:
       - SPRING_DATASOURCE_USERNAME=username
       - SPRING_DATASOURCE_PASSWORD=password
     ports:
-      - 8080:8080
+      - "8080:8080"
 
   postgres:
     image: postgres:12
     container_name: postgres
     ports:
-      - 5438:5432
+      - "5438:5432"
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
