@@ -9,6 +9,7 @@ import com.epam.turik.restchat.rest.exceptions.EntityNotFoundException;
 import com.epam.turik.restchat.rest.objects.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +28,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final UserRestMapper userRestMapper;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
-    public UserController(UserService userService, UserRestMapper userRestMapper) {
+    public UserController(UserService userService, UserRestMapper userRestMapper, KafkaTemplate<String, String> kafkaTemplate) {
         this.userService = userService;
         this.userRestMapper = userRestMapper;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Transactional
@@ -48,6 +51,7 @@ public class UserController {
 
     @GetMapping("")
     public List<UserDTO> getAll(UserFilterDTO userFilterDTO) {
+        kafkaTemplate.send("", "test");
         List<User> users;
         UserFilter userFilter = userRestMapper.fromDTO(userFilterDTO);
         if (userFilter.isEmpty()) { // TODO: probably should check DTO here
