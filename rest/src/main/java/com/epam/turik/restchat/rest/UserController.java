@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping("")
     public List<UserDTO> getAll(UserFilterDTO userFilterDTO) {
-        kafkaTemplate.send("", "test");
+        kafkaTemplate.send("test", "test");
         List<User> users;
         UserFilter userFilter = userRestMapper.fromDTO(userFilterDTO);
         if (userFilter.isEmpty()) { // TODO: probably should check DTO here
